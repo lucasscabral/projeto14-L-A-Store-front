@@ -1,22 +1,19 @@
-import UserContext from './UseContext'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import GlobalStyle from '../assets/style/GlobalStyle'
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import GlobalStyle from "../assets/style/GlobalStyle";
+import Login from "./Auth/Login";
+import Cadastro from "./Auth/Cadastro";
 
 export default function App() {
-
   return (
     <>
       <GlobalStyle />
-      
-    <UserContext.Provider value={{}}>
+
       <BrowserRouter>
         <Routes>
-          <Route path="" element={} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Cadastro />} />
         </Routes>
       </BrowserRouter>
-    </UserContext.Provider>
-    
     </>
-  )
+  );
 }
