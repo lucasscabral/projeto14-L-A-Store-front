@@ -1,9 +1,11 @@
 import { Container, Form, Button } from "../GlobalComponents";
+import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/image/logo.svg";
-
 import styled from "styled-components";
 
 export default function Cadastro() {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <TelaCadastro>
@@ -17,7 +19,9 @@ export default function Cadastro() {
 
           <Button type="submit">Cadastrar</Button>
         </Form>
-        <p className="vaiParaLogin">Já tem uma conta? Entre agora!</p>
+        <Link to={"/login"}>
+          <p className="vaiParaLogin">Já tem uma conta? Entre agora!</p>
+        </Link>
       </TelaCadastro>
     </Container>
   );
@@ -43,6 +47,10 @@ const TelaCadastro = styled.div`
 
     font-weight: 400;
   }
+
+  a {
+    text-decoration: none;
+  }
 `;
 
 const Input = styled.input`
@@ -62,6 +70,5 @@ const Input = styled.input`
     color: #311c1c;
     font-size: 20px;
     font-weight: 700;
-    /* background-image: url("emailIcon"); */
   }
 `;

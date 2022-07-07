@@ -1,9 +1,11 @@
 import { Container, Form, Button } from "../GlobalComponents";
+import { useNavigate, Link } from "react-router-dom";
 import logo from "../../assets/image/logo.svg";
-
 import styled from "styled-components";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   return (
     <Container>
       <TelaLogin>
@@ -15,7 +17,9 @@ export default function Login() {
 
           <Button type="submit">Entrar</Button>
         </Form>
-        <p className="vaiParaCadastro">Primeira vez? Cadastre-se!</p>
+        <Link to={"/cadastro"}>
+          <p className="vaiParaCadastro">Primeira vez? Cadastre-se!</p>
+        </Link>
       </TelaLogin>
     </Container>
   );
@@ -41,6 +45,10 @@ const TelaLogin = styled.div`
 
     font-weight: 400;
   }
+
+  a {
+    text-decoration: none;
+  }
 `;
 
 const Input = styled.input`
@@ -60,6 +68,5 @@ const Input = styled.input`
     color: #311c1c;
     font-size: 20px;
     font-weight: 700;
-    /* background-image: url("emailIcon"); */
   }
 `;
