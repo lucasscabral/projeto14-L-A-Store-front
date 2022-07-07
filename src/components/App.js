@@ -1,12 +1,14 @@
 import UserContext from './UseContext'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import GlobalStyle from '../assets/style/GlobalStyle'
 
-import '../estilos/reset.css'
-import '../estilos/fontes.css'
 
 export default function App() {
 
   return (
+    <>
+      <GlobalStyle />
+      
     <UserContext.Provider value={{}}>
       <BrowserRouter>
         <Routes>
@@ -14,5 +16,7 @@ export default function App() {
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>
+    
+    </>
   )
 }
