@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import GlobalStyle from '../assets/style/GlobalStyle.js'
+import GlobalStyle from "../assets/style/GlobalStyle";
+import Login from "./Auth/Login";
+import Cadastro from "./Auth/Cadastro";
 import TelaHome from './TelaHome/TelaHome.js'
 import UserContext from '../contexts/UserContext.js'
 
@@ -11,9 +13,11 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<TelaHome />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/cadastro" element={<Cadastro />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>
     </>
-  )
+  );
 }
