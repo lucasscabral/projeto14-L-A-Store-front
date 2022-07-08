@@ -105,6 +105,8 @@ section {
 }
 body {
   line-height: 1;
+  background-color: #ede8e7;
+
 
 }
 ol,
