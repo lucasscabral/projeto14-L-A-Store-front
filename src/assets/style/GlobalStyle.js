@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
 html,
@@ -108,7 +108,6 @@ body {
   background-color: #ede8e7;
 
 
- 
 }
 ol,
 ul {
@@ -132,15 +131,13 @@ table {
 
 * {
   box-sizing: border-box;
-  
+
 }
 
 * , html {
     font-family: 'Libre Bodoni', serif;
 }
 
+`
 
-
-`;
-
-export default GlobalStyle;
+export default GlobalStyle
