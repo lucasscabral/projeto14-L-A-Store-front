@@ -3,14 +3,13 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-direction: column;
   margin: 0 auto;
 `;
 
 export const Form = styled.form`
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
 `;
 
@@ -29,7 +28,11 @@ export const Button = styled.button`
   font-weight: 700;
   color: #fff;
 
-  border-radius: 50px;
+  border-radius: 10px;
   border: none;
   background-color: #311c1c;
+
+  svg {
+    height: 1rem;
+  }
 `;
