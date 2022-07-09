@@ -127,6 +127,10 @@ export default function TelaHome() {
     (produto) => produto.tipo === "outlet"
   );
 
+  const produtosDrop = todosProdutos?.filter(
+    (produto) => produto.tipo === "drop"
+  );
+
   useEffect(() => {
     async function pegarProdutosComGet() {
       try {
@@ -149,7 +153,7 @@ export default function TelaHome() {
         </div>
         <Nav>
           <h3>Collections</h3>
-          <h3>Sobre</h3>
+          <a href="#Sobre">Sobre</a>
         </Nav>
         <Buttons>
           <Link to={""} style={{ textDecoration: "none", color: "#301B1B" }}>
@@ -176,7 +180,7 @@ export default function TelaHome() {
           <a href="#OutLet">Ver mais</a>
         </button>
       </BanerOfertas>
-      <ListaProdutos>
+      <ListaProdutos id="MaisVendidos">
         <h2>Mais Vendidos</h2>
         <Produtos>
           {maisVendidos?.map((produto, id) => (
@@ -208,7 +212,7 @@ export default function TelaHome() {
           </Produtos>
         </ListaProdutos>
       </scroll-container>
-      <PorqueEscolhem>
+      <PorqueEscolhem id="Sobre">
         <h2>
           Porque as pessoas <br /> escolhem a gente
         </h2>
@@ -239,9 +243,101 @@ export default function TelaHome() {
           </p>
         </Vantagem>
       </PorqueEscolhem>
+      <ListaProdutos>
+        <h2 id="NovosDrops">L&A x Sufgang</h2>
+        <Produtos>
+          {produtosDrop.map((produto, id) => (
+            <Drops key={id}>
+              <Produto id={produto.numeroProduto}>
+                <img src={produto.imgProduto} alt="Produtos mais vendidos" />
+                <InformacoesProduto>
+                  <span>{produto.nome}</span>
+                  <div>
+                    <span>R$ {produto.preco}</span>
+                    <button disabled>Em breve</button>
+                  </div>
+                </InformacoesProduto>
+              </Produto>
+            </Drops>
+          ))}
+        </Produtos>
+      </ListaProdutos>
+      <Footer>
+        <FooterContainer>
+          <img height={150} width={130} src={Logo} alt="" />
+          <FooterInfos>
+            <h3>Catálogo</h3>
+            <a href="#MaisVendidos">Mais vendidos</a>
+            <a href="#OutLet">OutLet</a>
+            <a href="#NovosDrops">Novos drops</a>
+          </FooterInfos>
+          <FooterInfos>
+            <h3>Atendimento</h3>
+            <p>Seg / Quin 9:00 - 20:00 </p>
+            <p>Sex 9:00 - 19:00</p>
+            <p>Sab 9:00 - 17:00</p>
+          </FooterInfos>
+        </FooterContainer>
+
+        <Copyright>
+          <p>© 2022 L&A. All rights reserved.</p>
+        </Copyright>
+      </Footer>
     </Body>
   );
 }
+
+const Footer = styled.footer`
+  background-color: #ede8e7;
+  margin-top: 45px;
+  height: 290px;
+`;
+
+const FooterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 50px 0px 0 0px;
+  gap: 20px;
+`;
+
+const FooterInfos = styled.section`
+  margin-right: 25px;
+  margin-top: 30px;
+  h3 {
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #311c1c;
+    line-height: 18px;
+  }
+  a {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: #311c1c;
+    line-height: 20px;
+  }
+
+  p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #311c1c;
+    line-height: 20px;
+  }
+`;
+
+const Copyright = styled.div`
+  margin-top: 40px;
+  border-top: 1px solid;
+  padding-top: 10px;
+  padding-left: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #b5abaa;
+`;
 
 // CONFIGURAR O ESTILO DO POPUP
 Confirm.init({
@@ -310,10 +406,13 @@ const Nav = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  h3 {
+  h3,
+  a {
+    text-decoration: none;
     font-weight: 500;
     font-size: 18px;
     margin: 0 15px;
+    color: #000;
     cursor: pointer;
   }
 `;
@@ -510,5 +609,27 @@ const Vantagem = styled.div`
     font-size: 14px;
     font-weight: 400;
     color: #311c1c;
+  }
+`;
+
+const Drops = styled.div`
+  margin-top: 20px;
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  width: 190px;
+  height: 190px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.06);
+  position: relative;
+
+  img {
+    width: 190px;
+    height: 60%;
+    border-radius: 8px;
+  }
+  img:hover {
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.06);
   }
 `;
