@@ -1,14 +1,148 @@
-import styled from "styled-components";
-import { useEffect, useState } from "react";
-import Logo from "../../assets/image/logo.png";
-import ProdutoVenda from "../../assets/image/produto.png";
-import ImgSacola from "../../assets/image/imgsacola.png";
-import ImgLoginCadastro from "../../assets/image/imglogincadastro.png";
+
+import styled from 'styled-components'
+import { useEffect, useState, useContext } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import Logo from '../../assets/image/logo.png'
+import ProdutoVenda from '../../assets/image/produto.png'
+import ImgSacola from '../../assets/image/imgsacola.png'
+import ImgLoginCadastro from '../../assets/image/imglogincadastro.png'
+import ImgFavoritar from '../../assets/image/imgFavoritar.png'
+import ImgFavoritarSelecionado from '../../assets/image/imgFavoritarSelecionadopng.png'
 import ImgEstrela from "../../assets/image/star.svg";
 import ImgReturn from "../../assets/image/return.svg";
 import ImgCostumer from "../../assets/image/costumer.svg";
+import axios from 'axios'
+import { Confirm } from 'notiflix/build/notiflix-confirm-aio'
+import UserContext from '../../contexts/UserContext'
+
+function ProdutosMaisVendidos({
+  nomeProduto,
+  imgProduto,
+  precoProduto,
+  numeroProduto,
+  token
+}) {
+  const [produtoSelecionado, setProdutoSelecionado] = useState(false)
+  const navigate = useNavigate()
+  function selecionarPedido() {
+    if (token === '') {
+      return (
+        <>
+          {Confirm.show(
+            'Vi que você não está logado',
+            'Quer fazer login?',
+            'Sim',
+            'Não',
+            () => {
+              navigate('/login')
+            },
+            () => {}
+          )}
+        </>
+      )
+    } else {
+      setProdutoSelecionado(!produtoSelecionado)
+    }
+  }
+  return (
+    <Produto id={numeroProduto}>
+      <img
+        src={
+          produtoSelecionado === false ? ImgFavoritar : ImgFavoritarSelecionado
+        }
+        alt="icone de favoritar um produto"
+        className="Favoritar"
+        onClick={selecionarPedido}
+      />
+      <img src={imgProduto} alt="Produtos mais vendidos" />
+      <InformacoesProduto>
+        <span>{nomeProduto}</span>
+        <div>
+          <span>R$ {precoProduto}</span>
+          <button>Comprar</button>
+        </div>
+      </InformacoesProduto>
+    </Produto>
+  )
+}
+function ProdutosOutLet({
+  nomeProduto,
+  imgProduto,
+  precoProduto,
+  numeroProduto,
+  token
+}) {
+  const [produtoSelecionado, setProdutoSelecionado] = useState(false)
+  const navigate = useNavigate()
+  function selecionarPedido() {
+    if (token === '') {
+      return (
+        <>
+          {Confirm.show(
+            'Vi que você não está logado',
+            'Quer fazer login?',
+            'Sim',
+            'Não',
+            () => {
+              navigate('/login')
+            },
+            () => {}
+          )}
+        </>
+      )
+    } else {
+      setProdutoSelecionado(!produtoSelecionado)
+    }
+  }
+  return (
+    <Produto id={numeroProduto}>
+      <img
+        src={
+          produtoSelecionado === false ? ImgFavoritar : ImgFavoritarSelecionado
+        }
+        alt="icone de favoritar um produto"
+        className="Favoritar"
+        onClick={selecionarPedido}
+      />
+      <img src={imgProduto} alt="Produtos mais vendidos" />
+      <InformacoesProduto>
+        <span>{nomeProduto}</span>
+        <div>
+          <span>R$ {precoProduto}</span>
+          <button>Comprar</button>
+        </div>
+      </InformacoesProduto>
+    </Produto>
+  )
+}
+
 
 export default function TelaHome() {
+  const { token } = useContext(UserContext)
+  const [todosProdutos, setTodosProdutos] = useState([])
+
+  const [sacola, setSacola] = useState([])
+  const maisVendidos = todosProdutos?.filter(
+    produto => produto.tipo === 'mais_vendido'
+  )
+  const produtosOutlet = todosProdutos?.filter(
+    produto => produto.tipo === 'outlet'
+  )
+
+  useEffect(() => {
+    async function pegarProdutosComGet() {
+      try {
+        const pegaTodosProdutos = await axios.get(
+          'http://localhost:5000/produtos'
+        )
+        setTodosProdutos(pegaTodosProdutos.data)
+      } catch (error) {
+        alert('Não conseguimos listar os produtos')
+      }
+    }
+    pegarProdutosComGet()
+  }, [])
+
   return (
     <Body>
       <Header>
@@ -20,17 +154,22 @@ export default function TelaHome() {
           <h3>Sobre</h3>
         </Nav>
         <Buttons>
-          <img src={ImgSacola} alt="Botão de Sacola" />
-          <img src={ImgLoginCadastro} alt="Botão de Login ou Cadastro" />
+          <Link to={''} style={{ textDecoration: 'none', color: '#301B1B' }}>
+            <span>{sacola.length}</span>
+            <img src={ImgSacola} alt="Botão de Sacola" />
+          </Link>
+          <Link to={'/login'}>
+            <img src={ImgLoginCadastro} alt="Botão de Login ou Cadastro" />
+          </Link>
         </Buttons>
       </Header>
       <BanerOfertas>
-        <Produto>
+        <ProdutoOferta>
           <img src={ProdutoVenda} alt="Produtos Especiais" />
           <h1>
             Oferta <br /> Especial
           </h1>
-        </Produto>
+        </ProdutoOferta>
         <p>
           Temos diversar variedades de alguma coisa venha conhecer nosos
           produtos
@@ -42,52 +181,32 @@ export default function TelaHome() {
       <ListaProdutos>
         <h2>Mais Vendidos</h2>
         <Produtos>
-          <MaisVendidos>
-            <img src={ProdutoVenda} alt="Produtos mais vendidos" />
-            <InformacoesProduto>
-              <span>Nome do produto</span>
-              <div>
-                <span>R$199,90</span>
-                <button>Comprar</button>
-              </div>
-            </InformacoesProduto>
-          </MaisVendidos>
-          <MaisVendidos>
-            <img src={ProdutoVenda} alt="Produtos mais vendidos" />
-            <InformacoesProduto>
-              <span>Nome do produto</span>
-              <div>
-                <span>R$199,90</span>
-                <button>Comprar</button>
-              </div>
-            </InformacoesProduto>
-          </MaisVendidos>
+          {maisVendidos?.map((produto, id) => (
+            <ProdutosMaisVendidos
+              key={id}
+              nomeProduto={produto.nome}
+              precoProduto={produto.preco}
+              imgProduto={produto.imgProduto}
+              numeroProduto={produto.numeroProduto}
+              token={token}
+            />
+          ))}
         </Produtos>
       </ListaProdutos>
       <scroll-container>
         <ListaProdutos id="OutLet">
           <h2>OutLet</h2>
           <Produtos>
-            <MaisVendidos>
-              <img src={ProdutoVenda} alt="Produtos mais vendidos" />
-              <InformacoesProduto>
-                <span>Nome do produto</span>
-                <div>
-                  <span>R$199,90</span>
-                  <button>Comprar</button>
-                </div>
-              </InformacoesProduto>
-            </MaisVendidos>
-            <MaisVendidos>
-              <img src={ProdutoVenda} alt="Produtos mais vendidos" />
-              <InformacoesProduto>
-                <span>Nome do produto</span>
-                <div>
-                  <span>R$199,90</span>
-                  <button>Comprar</button>
-                </div>
-              </InformacoesProduto>
-            </MaisVendidos>
+            {produtosOutlet?.map((produto, id) => (
+              <ProdutosOutLet
+                key={id}
+                nomeProduto={produto.nome}
+                precoProduto={produto.preco}
+                imgProduto={produto.imgProduto}
+                numeroProduto={produto.numeroProduto}
+                token={token}
+              />
+            ))}
           </Produtos>
         </ListaProdutos>
       </scroll-container>
@@ -126,8 +245,38 @@ export default function TelaHome() {
   );
 }
 
-const Body = styled.body`
-  //width: 100%;
+// CONFIGURAR O ESTILO DO POPUP
+Confirm.init({
+  className: 'notiflix-confirm',
+  width: '300px',
+  zindex: 4003,
+  position: 'center',
+  distance: '10px',
+  backgroundColor: '#f8f8f8',
+  borderRadius: '25px',
+  backOverlay: true,
+  backOverlayColor: 'rgba(0,0,0,0.5)',
+  rtl: false,
+  fontFamily: 'Quicksand',
+  cssAnimation: true,
+  cssAnimationDuration: 300,
+  cssAnimationStyle: 'fade',
+  plainText: true,
+  titleColor: '#301B1B',
+  titleFontSize: '16px',
+  titleMaxLength: 34,
+  messageColor: '#1e1e1e',
+  messageFontSize: '14px',
+  messageMaxLength: 110,
+  buttonsFontSize: '15px',
+  buttonsMaxLength: 34,
+  okButtonColor: '#f8f8f8',
+  okButtonBackground: '#301B1B',
+  cancelButtonColor: '#f8f8f8',
+  cancelButtonBackground: '#a9a9a9'
+})
+
+const Body = styled.main`
   height: 100%;
   overflow-y: scroll;
   ::-webkit-scrollbar {
@@ -149,6 +298,7 @@ const Header = styled.header`
   justify-content: space-between;
   align-items: center;
   background-color: #ede8e7;
+  box-shadow: 3px 3px 10px #888888;
   div:nth-child(1) {
     img {
       width: 80px;
@@ -173,9 +323,16 @@ const Buttons = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
+
   img {
     margin: 0px 0.5rem;
     cursor: pointer;
+    z-index: 1;
+  }
+  span {
+    position: absolute;
+    top: 29px;
+    right: 80px;
   }
 `;
 const BanerOfertas = styled.div`
@@ -209,8 +366,8 @@ const BanerOfertas = styled.div`
       font-size: 15px;
     }
   }
-`;
-const Produto = styled.div`
+
+const ProdutoOferta = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -242,8 +399,8 @@ const Produtos = styled.div`
   gap: 20px;
   align-items: center;
   overflow-x: scroll;
-`;
-const MaisVendidos = styled.div`
+
+const Produto = styled.div`
   margin-top: 20px;
   display: flex;
   flex-direction: column;
@@ -251,10 +408,19 @@ const MaisVendidos = styled.div`
   height: 190px;
   border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.06);
+  position: relative;
+  .Favoritar {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 25px;
+    height: 22px;
+    cursor: pointer;
+  }
   img {
     width: 190px;
     height: 60%;
-    cursor: pointer;
+    border-radius: 8px;
   }
   img:hover {
     border-radius: 8px;
@@ -346,3 +512,6 @@ const Vantagem = styled.div`
     color: #311c1c;
   }
 `;
+
+
+

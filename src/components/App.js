@@ -1,14 +1,14 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import GlobalStyle from "../assets/style/GlobalStyle.js";
-import TelaHome from "./TelaHome/TelaHome.js";
-import Login from "./Auth/Login";
-import Cadastro from "./Auth/Cadastro";
-import UserContext from "../contexts/UserContext.js";
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import GlobalStyle from '../assets/style/GlobalStyle.js'
+import TelaHome from './TelaHome/TelaHome.js'
+import Login from './Auth/Login'
+import Cadastro from './Auth/Cadastro'
+import UserContext from '../contexts/UserContext.js'
+import { useState } from 'react'
 
 export default function App() {
-  const [token, setToken] = useState("");
-  console.log(token);
+  const [token, setToken] = useState('')
+  console.log(token)
 
   return (
     <>
@@ -23,5 +23,5 @@ export default function App() {
         </BrowserRouter>
       </UserContext.Provider>
     </>
-  );
+  )
 }
