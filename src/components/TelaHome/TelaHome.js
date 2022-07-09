@@ -152,7 +152,7 @@ export default function TelaHome() {
           <img src={Logo} alt="logo da loja" />
         </div>
         <Nav>
-          <h3>Collections</h3>
+          <a href="#NovosDrops">Collections</a>
           <a href="#Sobre">Sobre</a>
         </Nav>
         <Buttons>
@@ -173,8 +173,7 @@ export default function TelaHome() {
           </h1>
         </ProdutoOferta>
         <p>
-          Temos diversar variedades de alguma coisa venha conhecer nosos
-          produtos
+          Temos diversas variedades de roupas venha conhecer nossos produtos
         </p>
         <button>
           <a href="#OutLet">Ver mais</a>
@@ -354,7 +353,7 @@ const Nav = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  h3,
+
   a {
     text-decoration: none;
     font-weight: 500;
