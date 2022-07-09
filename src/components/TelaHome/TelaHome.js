@@ -1,9 +1,12 @@
-import styled from 'styled-components'
-import { useEffect, useState } from 'react'
-import Logo from '../../assets/image/logo.png'
-import ProdutoVenda from '../../assets/image/produto.png'
-import ImgSacola from '../../assets/image/imgsacola.png'
-import ImgLoginCadastro from '../../assets/image/imglogincadastro.png'
+import styled from "styled-components";
+import { useEffect, useState } from "react";
+import Logo from "../../assets/image/logo.png";
+import ProdutoVenda from "../../assets/image/produto.png";
+import ImgSacola from "../../assets/image/imgsacola.png";
+import ImgLoginCadastro from "../../assets/image/imglogincadastro.png";
+import ImgEstrela from "../../assets/image/star.svg";
+import ImgReturn from "../../assets/image/return.svg";
+import ImgCostumer from "../../assets/image/costumer.svg";
 
 export default function TelaHome() {
   return (
@@ -88,8 +91,39 @@ export default function TelaHome() {
           </Produtos>
         </ListaProdutos>
       </scroll-container>
+      <PorqueEscolhem>
+        <h2>
+          Porque as pessoas <br /> escolhem a gente
+        </h2>
+        <Vantagens>
+          <Vantagem>
+            <img src={ImgEstrela} alt="" />
+            <h3>Alta qualidade</h3>
+            <p>
+              Todos os nossos produtos passam por uma inspeção muito rigorosa
+              antes de despachá-los
+            </p>
+          </Vantagem>
+          <Vantagem>
+            <img src={ImgReturn} alt="" />
+            <h3>Retorno fácil</h3>
+            <p>
+              Nossa política de devolução é simples e é por isso que os clientes
+              adoram nossa loja
+            </p>
+          </Vantagem>
+        </Vantagens>
+        <Vantagem>
+          <img src={ImgCostumer} alt="" />
+          <h3>Atendimento ao Cliente</h3>
+          <p>
+            Oferecemos um atendimento ao cliente incrível, não importa o que
+            aconteça
+          </p>
+        </Vantagem>
+      </PorqueEscolhem>
     </Body>
-  )
+  );
 }
 
 const Body = styled.body`
@@ -103,7 +137,7 @@ const Body = styled.body`
     overflow: scroll;
     scroll-behavior: smooth;
   }
-`
+`;
 const Header = styled.header`
   position: fixed;
   top: 0;
@@ -121,7 +155,7 @@ const Header = styled.header`
       height: 86px;
     }
   }
-`
+`;
 const Nav = styled.div`
   width: 100%;
   display: flex;
@@ -133,7 +167,7 @@ const Nav = styled.div`
     margin: 0 15px;
     cursor: pointer;
   }
-`
+`;
 const Buttons = styled.div`
   width: 100%;
   display: flex;
@@ -143,7 +177,7 @@ const Buttons = styled.div`
     margin: 0px 0.5rem;
     cursor: pointer;
   }
-`
+`;
 const BanerOfertas = styled.div`
   margin-top: 95px;
   width: 100%;
@@ -175,7 +209,7 @@ const BanerOfertas = styled.div`
       font-size: 15px;
     }
   }
-`
+`;
 const Produto = styled.div`
   display: flex;
   width: 100%;
@@ -191,7 +225,7 @@ const Produto = styled.div`
     font-size: 45px;
     text-align: center;
   }
-`
+`;
 const ListaProdutos = styled.div`
   padding-left: 10px;
   box-sizing: border-box;
@@ -201,14 +235,14 @@ const ListaProdutos = styled.div`
     font-size: 36px;
     margin-left: 5px;
   }
-`
+`;
 const Produtos = styled.div`
   padding-right: 5px;
   display: flex;
   gap: 20px;
   align-items: center;
   overflow-x: scroll;
-`
+`;
 const MaisVendidos = styled.div`
   margin-top: 20px;
   display: flex;
@@ -226,7 +260,7 @@ const MaisVendidos = styled.div`
     border-radius: 8px;
     background-color: rgba(0, 0, 0, 0.06);
   }
-`
+`;
 const InformacoesProduto = styled.div`
   height: 40%;
   width: 100%;
@@ -259,4 +293,56 @@ const InformacoesProduto = styled.div`
       border-radius: 5px;
     }
   }
-`
+`;
+
+const PorqueEscolhem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: #ede8e7;
+  margin-top: 45px;
+  height: 500px;
+
+  h2 {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 31px;
+
+    color: #311c1c;
+
+    margin-top: 45px;
+    margin-bottom: 20px;
+  }
+`;
+
+const Vantagens = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Vantagem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 217px;
+  margin-top: 20px;
+
+  img {
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #311c1c;
+  }
+  p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #311c1c;
+  }
+`;
