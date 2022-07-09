@@ -287,58 +287,6 @@ export default function TelaHome() {
   );
 }
 
-const Footer = styled.footer`
-  background-color: #ede8e7;
-  margin-top: 45px;
-  height: 290px;
-`;
-
-const FooterContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 50px 0px 0 0px;
-  gap: 20px;
-`;
-
-const FooterInfos = styled.section`
-  margin-right: 25px;
-  margin-top: 30px;
-  h3 {
-    margin-bottom: 5px;
-    font-size: 20px;
-    font-weight: 500;
-    color: #311c1c;
-    line-height: 18px;
-  }
-  a {
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 400;
-    color: #311c1c;
-    line-height: 20px;
-  }
-
-  p {
-    font-size: 14px;
-    font-weight: 400;
-    color: #311c1c;
-    line-height: 20px;
-  }
-`;
-
-const Copyright = styled.div`
-  margin-top: 40px;
-  border-top: 1px solid;
-  padding-top: 10px;
-  padding-left: 20px;
-  font-size: 14px;
-  font-weight: 400;
-  color: #b5abaa;
-`;
-
 // CONFIGURAR O ESTILO DO POPUP
 Confirm.init({
   className: "notiflix-confirm",
@@ -632,4 +580,56 @@ const Drops = styled.div`
     border-radius: 8px;
     background-color: rgba(0, 0, 0, 0.06);
   }
+`;
+
+const Footer = styled.footer`
+  background-color: #ede8e7;
+  margin-top: 45px;
+  height: 290px;
+`;
+
+const FooterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 50px 0px 0 0px;
+  gap: 20px;
+`;
+
+const FooterInfos = styled.section`
+  margin-right: 25px;
+  margin-top: 30px;
+  h3 {
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #311c1c;
+    line-height: 18px;
+  }
+  a {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: #311c1c;
+    line-height: 20px;
+  }
+
+  p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #311c1c;
+    line-height: 20px;
+  }
+`;
+
+const Copyright = styled.div`
+  margin-top: 40px;
+  border-top: 1px solid;
+  padding-top: 10px;
+  padding-left: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #b5abaa;
 `;
