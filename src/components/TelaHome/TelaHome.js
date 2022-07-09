@@ -584,7 +584,6 @@ const Drops = styled.div`
 
 const Footer = styled.footer`
   background-color: #ede8e7;
-  margin-top: 45px;
   height: 290px;
 `;
 
