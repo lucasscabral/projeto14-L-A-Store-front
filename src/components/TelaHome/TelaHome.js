@@ -1,47 +1,46 @@
-
-import styled from 'styled-components'
-import { useEffect, useState, useContext } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import Logo from '../../assets/image/logo.png'
-import ProdutoVenda from '../../assets/image/produto.png'
-import ImgSacola from '../../assets/image/imgsacola.png'
-import ImgLoginCadastro from '../../assets/image/imglogincadastro.png'
-import ImgFavoritar from '../../assets/image/imgFavoritar.png'
-import ImgFavoritarSelecionado from '../../assets/image/imgFavoritarSelecionadopng.png'
+import styled from "styled-components";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import Logo from "../../assets/image/logo.png";
+import ProdutoVenda from "../../assets/image/produto.png";
+import ImgSacola from "../../assets/image/imgsacola.png";
+import ImgLoginCadastro from "../../assets/image/imglogincadastro.png";
+import ImgFavoritar from "../../assets/image/imgFavoritar.png";
+import ImgFavoritarSelecionado from "../../assets/image/imgFavoritarSelecionadopng.png";
 import ImgEstrela from "../../assets/image/star.svg";
 import ImgReturn from "../../assets/image/return.svg";
 import ImgCostumer from "../../assets/image/costumer.svg";
-import axios from 'axios'
-import { Confirm } from 'notiflix/build/notiflix-confirm-aio'
-import UserContext from '../../contexts/UserContext'
+import axios from "axios";
+import { Confirm } from "notiflix/build/notiflix-confirm-aio";
+import UserContext from "../../contexts/UserContext";
 
 function ProdutosMaisVendidos({
   nomeProduto,
   imgProduto,
   precoProduto,
   numeroProduto,
-  token
+  token,
 }) {
-  const [produtoSelecionado, setProdutoSelecionado] = useState(false)
-  const navigate = useNavigate()
+  const [produtoSelecionado, setProdutoSelecionado] = useState(false);
+  const navigate = useNavigate();
   function selecionarPedido() {
-    if (token === '') {
+    if (token === "") {
       return (
         <>
           {Confirm.show(
-            'Vi que você não está logado',
-            'Quer fazer login?',
-            'Sim',
-            'Não',
+            "Vi que você não está logado",
+            "Quer fazer login?",
+            "Sim",
+            "Não",
             () => {
-              navigate('/login')
+              navigate("/login");
             },
             () => {}
           )}
         </>
-      )
+      );
     } else {
-      setProdutoSelecionado(!produtoSelecionado)
+      setProdutoSelecionado(!produtoSelecionado);
     }
   }
   return (
@@ -63,35 +62,35 @@ function ProdutosMaisVendidos({
         </div>
       </InformacoesProduto>
     </Produto>
-  )
+  );
 }
 function ProdutosOutLet({
   nomeProduto,
   imgProduto,
   precoProduto,
   numeroProduto,
-  token
+  token,
 }) {
-  const [produtoSelecionado, setProdutoSelecionado] = useState(false)
-  const navigate = useNavigate()
+  const [produtoSelecionado, setProdutoSelecionado] = useState(false);
+  const navigate = useNavigate();
   function selecionarPedido() {
-    if (token === '') {
+    if (token === "") {
       return (
         <>
           {Confirm.show(
-            'Vi que você não está logado',
-            'Quer fazer login?',
-            'Sim',
-            'Não',
+            "Vi que você não está logado",
+            "Quer fazer login?",
+            "Sim",
+            "Não",
             () => {
-              navigate('/login')
+              navigate("/login");
             },
             () => {}
           )}
         </>
-      )
+      );
     } else {
-      setProdutoSelecionado(!produtoSelecionado)
+      setProdutoSelecionado(!produtoSelecionado);
     }
   }
   return (
@@ -113,35 +112,34 @@ function ProdutosOutLet({
         </div>
       </InformacoesProduto>
     </Produto>
-  )
+  );
 }
 
-
 export default function TelaHome() {
-  const { token } = useContext(UserContext)
-  const [todosProdutos, setTodosProdutos] = useState([])
+  const { token } = useContext(UserContext);
+  const [todosProdutos, setTodosProdutos] = useState([]);
 
-  const [sacola, setSacola] = useState([])
+  const [sacola, setSacola] = useState([]);
   const maisVendidos = todosProdutos?.filter(
-    produto => produto.tipo === 'mais_vendido'
-  )
+    (produto) => produto.tipo === "mais_vendido"
+  );
   const produtosOutlet = todosProdutos?.filter(
-    produto => produto.tipo === 'outlet'
-  )
+    (produto) => produto.tipo === "outlet"
+  );
 
   useEffect(() => {
     async function pegarProdutosComGet() {
       try {
         const pegaTodosProdutos = await axios.get(
-          'http://localhost:5000/produtos'
-        )
-        setTodosProdutos(pegaTodosProdutos.data)
+          "http://localhost:5000/produtos"
+        );
+        setTodosProdutos(pegaTodosProdutos.data);
       } catch (error) {
-        alert('Não conseguimos listar os produtos')
+        alert("Não conseguimos listar os produtos");
       }
     }
-    pegarProdutosComGet()
-  }, [])
+    pegarProdutosComGet();
+  }, []);
 
   return (
     <Body>
@@ -154,11 +152,11 @@ export default function TelaHome() {
           <h3>Sobre</h3>
         </Nav>
         <Buttons>
-          <Link to={''} style={{ textDecoration: 'none', color: '#301B1B' }}>
+          <Link to={""} style={{ textDecoration: "none", color: "#301B1B" }}>
             <span>{sacola.length}</span>
             <img src={ImgSacola} alt="Botão de Sacola" />
           </Link>
-          <Link to={'/login'}>
+          <Link to={"/login"}>
             <img src={ImgLoginCadastro} alt="Botão de Login ou Cadastro" />
           </Link>
         </Buttons>
@@ -247,34 +245,34 @@ export default function TelaHome() {
 
 // CONFIGURAR O ESTILO DO POPUP
 Confirm.init({
-  className: 'notiflix-confirm',
-  width: '300px',
+  className: "notiflix-confirm",
+  width: "300px",
   zindex: 4003,
-  position: 'center',
-  distance: '10px',
-  backgroundColor: '#f8f8f8',
-  borderRadius: '25px',
+  position: "center",
+  distance: "10px",
+  backgroundColor: "#f8f8f8",
+  borderRadius: "25px",
   backOverlay: true,
-  backOverlayColor: 'rgba(0,0,0,0.5)',
+  backOverlayColor: "rgba(0,0,0,0.5)",
   rtl: false,
-  fontFamily: 'Quicksand',
+  fontFamily: "Quicksand",
   cssAnimation: true,
   cssAnimationDuration: 300,
-  cssAnimationStyle: 'fade',
+  cssAnimationStyle: "fade",
   plainText: true,
-  titleColor: '#301B1B',
-  titleFontSize: '16px',
+  titleColor: "#301B1B",
+  titleFontSize: "16px",
   titleMaxLength: 34,
-  messageColor: '#1e1e1e',
-  messageFontSize: '14px',
+  messageColor: "#1e1e1e",
+  messageFontSize: "14px",
   messageMaxLength: 110,
-  buttonsFontSize: '15px',
+  buttonsFontSize: "15px",
   buttonsMaxLength: 34,
-  okButtonColor: '#f8f8f8',
-  okButtonBackground: '#301B1B',
-  cancelButtonColor: '#f8f8f8',
-  cancelButtonBackground: '#a9a9a9'
-})
+  okButtonColor: "#f8f8f8",
+  okButtonBackground: "#301B1B",
+  cancelButtonColor: "#f8f8f8",
+  cancelButtonBackground: "#a9a9a9",
+});
 
 const Body = styled.main`
   height: 100%;
@@ -299,6 +297,7 @@ const Header = styled.header`
   align-items: center;
   background-color: #ede8e7;
   box-shadow: 3px 3px 10px #888888;
+  z-index: 2;
   div:nth-child(1) {
     img {
       width: 80px;
@@ -366,7 +365,7 @@ const BanerOfertas = styled.div`
       font-size: 15px;
     }
   }
-
+`;
 const ProdutoOferta = styled.div`
   display: flex;
   width: 100%;
@@ -399,6 +398,7 @@ const Produtos = styled.div`
   gap: 20px;
   align-items: center;
   overflow-x: scroll;
+`;
 
 const Produto = styled.div`
   margin-top: 20px;
@@ -512,6 +512,3 @@ const Vantagem = styled.div`
     color: #311c1c;
   }
 `;
-
-
-
