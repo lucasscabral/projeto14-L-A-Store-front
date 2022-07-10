@@ -1,18 +1,18 @@
-import styled from "styled-components";
-import { useEffect, useState, useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import Logo from "../../assets/image/logo.png";
-import ProdutoVenda from "../../assets/image/produto.png";
-import ImgSacola from "../../assets/image/imgsacola.png";
-import ImgLoginCadastro from "../../assets/image/imglogincadastro.png";
-import ImgFavoritar from "../../assets/image/imgFavoritar.png";
-import ImgFavoritarSelecionado from "../../assets/image/imgFavoritarSelecionadopng.png";
-import ImgEstrela from "../../assets/image/star.svg";
-import ImgReturn from "../../assets/image/return.svg";
-import ImgCostumer from "../../assets/image/costumer.svg";
-import axios from "axios";
-import { Confirm } from "notiflix/build/notiflix-confirm-aio";
-import UserContext from "../../contexts/UserContext";
+import styled from 'styled-components'
+import { useEffect, useState, useContext } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import Logo from '../../assets/image/logo.png'
+import ProdutoVenda from '../../assets/image/produto.png'
+import ImgSacola from '../../assets/image/imgsacola.png'
+import ImgLoginCadastro from '../../assets/image/imglogincadastro.png'
+import ImgFavoritar from '../../assets/image/imgFavoritar.png'
+import ImgFavoritarSelecionado from '../../assets/image/imgFavoritarSelecionadopng.png'
+import ImgEstrela from '../../assets/image/star.svg'
+import ImgReturn from '../../assets/image/return.svg'
+import ImgCostumer from '../../assets/image/costumer.svg'
+import axios from 'axios'
+import { Confirm } from 'notiflix/build/notiflix-confirm-aio'
+import UserContext from '../../contexts/UserContext'
 
 function ProdutosMaisVendidos({
   nomeProduto,
@@ -22,21 +22,20 @@ function ProdutosMaisVendidos({
   token,
   sacola,
   setSacola
-
 }) {
-  const [produtoSelecionado, setProdutoSelecionado] = useState(false);
-  const navigate = useNavigate();
+  const [produtoSelecionado, setProdutoSelecionado] = useState(false)
+  const navigate = useNavigate()
   function selecionarPedido() {
-    if (token === "") {
+    if (token === '') {
       return (
         <>
           {Confirm.show(
-            "Vi que você não está logado",
-            "Quer fazer login?",
-            "Sim",
-            "Não",
+            'Vi que você não está logado',
+            'Quer fazer login?',
+            'Sim',
+            'Não',
             () => {
-              navigate("/login");
+              navigate('/login')
             },
             () => {}
           )}
@@ -76,7 +75,7 @@ function ProdutosMaisVendidos({
           console.log(error)
         })
       return
-    } 
+    }
   }
   return (
     <Produto id={numeroProduto}>
@@ -97,7 +96,7 @@ function ProdutosMaisVendidos({
         </div>
       </InformacoesProduto>
     </Produto>
-  );
+  )
 }
 function ProdutosOutLet({
   nomeProduto,
@@ -107,38 +106,61 @@ function ProdutosOutLet({
   token,
   sacola,
   setSacola
-
 }) {
-  const [produtoSelecionado, setProdutoSelecionado] = useState(false);
-  const navigate = useNavigate();
+  const [produtoSelecionado, setProdutoSelecionado] = useState(false)
+  const navigate = useNavigate()
   function selecionarPedido() {
-    if (token === "") {
+    if (token === '') {
       return (
         <>
           {Confirm.show(
-            "Vi que você não está logado",
-            "Quer fazer login?",
-            "Sim",
-            "Não",
+            'Vi que você não está logado',
+            'Quer fazer login?',
+            'Sim',
+            'Não',
             () => {
-              navigate("/login");
+              navigate('/login')
             },
             () => {}
           )}
         </>
-
       )
       return
     }
     if (!produtoSelecionado) {
-      setProdutoSelecionado(!produtoSelecionado)
-      setSacola([...sacola, numeroProduto])
+      const pedidoSelecionado = {
+        numeroProduto,
+        token
+      }
+      const promise = axios.post(
+        'http://127.0.0.1:5000/checkout',
+        pedidoSelecionado
+      )
+      promise
+        .then(response => {
+          setSacola([...sacola, response.data])
+          setProdutoSelecionado(!produtoSelecionado)
+        })
+        .catch(error => {})
+      return
     } else {
-      setProdutoSelecionado(!produtoSelecionado)
-      let desmarcaFavorito = sacola.filter(produto => produto !== numeroProduto)
-      setSacola([...desmarcaFavorito])
-      );
-    } 
+      const desmarcarProduto = axios.delete(
+        `http://127.0.0.1:5000/checkout/${numeroProduto}`
+      )
+      desmarcarProduto
+        .then(response => {
+          setProdutoSelecionado(!produtoSelecionado)
+          let desmarcaFavorito = sacola.filter(
+            produto => produto.numeroProduto !== response.data.numeroProduto
+          )
+          setSacola([...desmarcaFavorito])
+          console.log(desmarcaFavorito)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      return
+    }
   }
   return (
     <Produto id={numeroProduto}>
@@ -159,7 +181,7 @@ function ProdutosOutLet({
         </div>
       </InformacoesProduto>
     </Produto>
-  );
+  )
 }
 
 export default function TelaHome() {
@@ -167,15 +189,13 @@ export default function TelaHome() {
   const [todosProdutos, setTodosProdutos] = useState([])
 
   const maisVendidos = todosProdutos?.filter(
-    (produto) => produto.tipo === "mais_vendido"
-  );
+    produto => produto.tipo === 'mais_vendido'
+  )
   const produtosOutlet = todosProdutos?.filter(
-    (produto) => produto.tipo === "outlet"
-  );
+    produto => produto.tipo === 'outlet'
+  )
 
-  const produtosDrop = todosProdutos?.filter(
-    (produto) => produto.tipo === "drop"
-  );
+  const produtosDrop = todosProdutos?.filter(produto => produto.tipo === 'drop')
 
   useEffect(() => {
     async function pegarProdutosComGet() {
@@ -185,11 +205,11 @@ export default function TelaHome() {
         )
         setTodosProdutos(pegaTodosProdutos.data)
       } catch (error) {
-        alert("Não conseguimos listar os produtos");
+        alert('Não conseguimos listar os produtos')
       }
     }
-    pegarProdutosComGet();
-  }, []);
+    pegarProdutosComGet()
+  }, [])
 
   return (
     <Body>
@@ -206,7 +226,7 @@ export default function TelaHome() {
             <span>{sacola.length === 0 ? '' : sacola.length}</span>
             <img src={ImgSacola} alt="Botão de Sacola" />
           </Link>
-          <Link to={"/login"}>
+          <Link to={'/login'}>
             <img src={ImgLoginCadastro} alt="Botão de Login ou Cadastro" />
           </Link>
         </Buttons>
@@ -333,39 +353,39 @@ export default function TelaHome() {
         </Copyright>
       </Footer>
     </Body>
-  );
+  )
 }
 
 // CONFIGURAR O ESTILO DO POPUP
 Confirm.init({
-  className: "notiflix-confirm",
-  width: "300px",
+  className: 'notiflix-confirm',
+  width: '300px',
   zindex: 4003,
-  position: "center",
-  distance: "10px",
-  backgroundColor: "#f8f8f8",
-  borderRadius: "25px",
+  position: 'center',
+  distance: '10px',
+  backgroundColor: '#f8f8f8',
+  borderRadius: '25px',
   backOverlay: true,
-  backOverlayColor: "rgba(0,0,0,0.5)",
+  backOverlayColor: 'rgba(0,0,0,0.5)',
   rtl: false,
-  fontFamily: "Quicksand",
+  fontFamily: 'Quicksand',
   cssAnimation: true,
   cssAnimationDuration: 300,
-  cssAnimationStyle: "fade",
+  cssAnimationStyle: 'fade',
   plainText: true,
-  titleColor: "#301B1B",
-  titleFontSize: "16px",
+  titleColor: '#301B1B',
+  titleFontSize: '16px',
   titleMaxLength: 34,
-  messageColor: "#1e1e1e",
-  messageFontSize: "14px",
+  messageColor: '#1e1e1e',
+  messageFontSize: '14px',
   messageMaxLength: 110,
-  buttonsFontSize: "15px",
+  buttonsFontSize: '15px',
   buttonsMaxLength: 34,
-  okButtonColor: "#f8f8f8",
-  okButtonBackground: "#301B1B",
-  cancelButtonColor: "#f8f8f8",
-  cancelButtonBackground: "#a9a9a9",
-});
+  okButtonColor: '#f8f8f8',
+  okButtonBackground: '#301B1B',
+  cancelButtonColor: '#f8f8f8',
+  cancelButtonBackground: '#a9a9a9'
+})
 
 const Body = styled.main`
   height: 100%;
@@ -377,7 +397,7 @@ const Body = styled.main`
     overflow: scroll;
     scroll-behavior: smooth;
   }
-`;
+`
 const Header = styled.header`
   position: fixed;
   top: 0;
@@ -397,7 +417,7 @@ const Header = styled.header`
       height: 86px;
     }
   }
-`;
+`
 const Nav = styled.div`
   width: 100%;
   display: flex;
@@ -412,7 +432,7 @@ const Nav = styled.div`
     color: #000;
     cursor: pointer;
   }
-`;
+`
 const Buttons = styled.div`
   width: 100%;
   display: flex;
@@ -429,7 +449,7 @@ const Buttons = styled.div`
     top: 29px;
     right: 80px;
   }
-`;
+`
 const BanerOfertas = styled.div`
   margin-top: 95px;
   width: 100%;
@@ -461,7 +481,7 @@ const BanerOfertas = styled.div`
       font-size: 15px;
     }
   }
-`;
+`
 const ProdutoOferta = styled.div`
   display: flex;
   width: 100%;
@@ -477,7 +497,7 @@ const ProdutoOferta = styled.div`
     font-size: 45px;
     text-align: center;
   }
-`;
+`
 const ListaProdutos = styled.div`
   padding-left: 10px;
   box-sizing: border-box;
@@ -487,14 +507,14 @@ const ListaProdutos = styled.div`
     font-size: 36px;
     margin-left: 5px;
   }
-`;
+`
 const Produtos = styled.div`
   padding-right: 5px;
   display: flex;
   gap: 20px;
   align-items: center;
   overflow-x: scroll;
-`;
+`
 
 const Produto = styled.div`
   margin-top: 20px;
@@ -522,7 +542,7 @@ const Produto = styled.div`
     border-radius: 8px;
     background-color: rgba(0, 0, 0, 0.06);
   }
-`;
+`
 const InformacoesProduto = styled.div`
   height: 40%;
   width: 100%;
@@ -554,7 +574,8 @@ const InformacoesProduto = styled.div`
       cursor: pointer;
       border-radius: 5px;
     }
- }`;
+  }
+`
 
 const PorqueEscolhem = styled.div`
   display: flex;
@@ -575,12 +596,12 @@ const PorqueEscolhem = styled.div`
     margin-top: 45px;
     margin-bottom: 20px;
   }
-`;
+`
 
 const Vantagens = styled.div`
   display: flex;
   align-items: center;
-`;
+`
 
 const Vantagem = styled.div`
   display: flex;
@@ -606,7 +627,7 @@ const Vantagem = styled.div`
     font-weight: 400;
     color: #311c1c;
   }
-`;
+`
 
 const Drops = styled.div`
   margin-top: 20px;
@@ -628,19 +649,19 @@ const Drops = styled.div`
     border-radius: 8px;
     background-color: rgba(0, 0, 0, 0.06);
   }
-`;
+`
 
 const Footer = styled.footer`
   background-color: #ede8e7;
   height: 290px;
-`;
+`
 
 const FooterContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: 50px 0px 0 0px;
   gap: 20px;
-`;
+`
 
 const FooterInfos = styled.section`
   margin-right: 25px;
@@ -669,7 +690,7 @@ const FooterInfos = styled.section`
     color: #311c1c;
     line-height: 20px;
   }
-`;
+`
 
 const Copyright = styled.div`
   margin-top: 40px;
@@ -679,4 +700,4 @@ const Copyright = styled.div`
   font-size: 14px;
   font-weight: 400;
   color: #b5abaa;
-`;
+`
