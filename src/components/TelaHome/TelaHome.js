@@ -125,12 +125,38 @@ function ProdutosOutLet({
       return
     }
     if (!produtoSelecionado) {
-      setProdutoSelecionado(!produtoSelecionado)
-      setSacola([...sacola, numeroProduto])
+      const pedidoSelecionado = {
+        numeroProduto,
+        token
+      }
+      const promise = axios.post(
+        'http://127.0.0.1:5000/checkout',
+        pedidoSelecionado
+      )
+      promise
+        .then(response => {
+          setSacola([...sacola, response.data])
+          setProdutoSelecionado(!produtoSelecionado)
+        })
+        .catch(error => {})
+      return
     } else {
-      setProdutoSelecionado(!produtoSelecionado)
-      let desmarcaFavorito = sacola.filter(produto => produto !== numeroProduto)
-      setSacola([...desmarcaFavorito])
+      const desmarcarProduto = axios.delete(
+        `http://127.0.0.1:5000/checkout/${numeroProduto}`
+      )
+      desmarcarProduto
+        .then(response => {
+          setProdutoSelecionado(!produtoSelecionado)
+          let desmarcaFavorito = sacola.filter(
+            produto => produto.numeroProduto !== response.data.numeroProduto
+          )
+          setSacola([...desmarcaFavorito])
+          console.log(desmarcaFavorito)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      return
     }
   }
   return (
