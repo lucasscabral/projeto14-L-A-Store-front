@@ -7,6 +7,9 @@ import ImgSacola from '../../assets/image/imgsacola.png'
 import ImgLoginCadastro from '../../assets/image/imglogincadastro.png'
 import ImgFavoritar from '../../assets/image/imgFavoritar.png'
 import ImgFavoritarSelecionado from '../../assets/image/imgFavoritarSelecionadopng.png'
+import ImgEstrela from '../../assets/image/star.svg'
+import ImgReturn from '../../assets/image/return.svg'
+import ImgCostumer from '../../assets/image/costumer.svg'
 import axios from 'axios'
 import { Confirm } from 'notiflix/build/notiflix-confirm-aio'
 import UserContext from '../../contexts/UserContext'
@@ -192,6 +195,8 @@ export default function TelaHome() {
     produto => produto.tipo === 'outlet'
   )
 
+  const produtosDrop = todosProdutos?.filter(produto => produto.tipo === 'drop')
+
   useEffect(() => {
     async function pegarProdutosComGet() {
       try {
@@ -213,8 +218,8 @@ export default function TelaHome() {
           <img src={Logo} alt="logo da loja" />
         </div>
         <Nav>
-          <h3>Collections</h3>
-          <h3>Sobre</h3>
+          <a href="#NovosDrops">Collections</a>
+          <a href="#Sobre">Sobre</a>
         </Nav>
         <Buttons>
           <Link to={''} style={{ textDecoration: 'none', color: '#301B1B' }}>
@@ -234,14 +239,13 @@ export default function TelaHome() {
           </h1>
         </ProdutoOferta>
         <p>
-          Temos diversar variedades de alguma coisa venha conhecer nosos
-          produtos
+          Temos diversas variedades de roupas venha conhecer nossos produtos
         </p>
         <button>
           <a href="#OutLet">Ver mais</a>
         </button>
       </BanerOfertas>
-      <ListaProdutos>
+      <ListaProdutos id="MaisVendidos">
         <h2>Mais Vendidos</h2>
         <Produtos>
           {maisVendidos?.map((produto, id) => (
@@ -277,6 +281,77 @@ export default function TelaHome() {
           </Produtos>
         </ListaProdutos>
       </scroll-container>
+      <PorqueEscolhem id="Sobre">
+        <h2>
+          Porque as pessoas <br /> escolhem a gente
+        </h2>
+        <Vantagens>
+          <Vantagem>
+            <img src={ImgEstrela} alt="" />
+            <h3>Alta qualidade</h3>
+            <p>
+              Todos os nossos produtos passam por uma inspeção muito rigorosa
+              antes de despachá-los
+            </p>
+          </Vantagem>
+          <Vantagem>
+            <img src={ImgReturn} alt="" />
+            <h3>Retorno fácil</h3>
+            <p>
+              Nossa política de devolução é simples e é por isso que os clientes
+              adoram nossa loja
+            </p>
+          </Vantagem>
+        </Vantagens>
+        <Vantagem>
+          <img src={ImgCostumer} alt="" />
+          <h3>Atendimento ao Cliente</h3>
+          <p>
+            Oferecemos um atendimento ao cliente incrível, não importa o que
+            aconteça
+          </p>
+        </Vantagem>
+      </PorqueEscolhem>
+      <ListaProdutos>
+        <h2 id="NovosDrops">L&A x Sufgang</h2>
+        <Produtos>
+          {produtosDrop.map((produto, id) => (
+            <Drops key={id}>
+              <Produto id={produto.numeroProduto}>
+                <img src={produto.imgProduto} alt="Produtos mais vendidos" />
+                <InformacoesProduto>
+                  <span>{produto.nome}</span>
+                  <div>
+                    <span>R$ {produto.preco}</span>
+                    <button disabled>Em breve</button>
+                  </div>
+                </InformacoesProduto>
+              </Produto>
+            </Drops>
+          ))}
+        </Produtos>
+      </ListaProdutos>
+      <Footer>
+        <FooterContainer>
+          <img height={150} width={130} src={Logo} alt="" />
+          <FooterInfos>
+            <h3>Catálogo</h3>
+            <a href="#MaisVendidos">Mais vendidos</a>
+            <a href="#OutLet">OutLet</a>
+            <a href="#NovosDrops">Novos drops</a>
+          </FooterInfos>
+          <FooterInfos>
+            <h3>Atendimento</h3>
+            <p>Seg / Quin 9:00 - 20:00 </p>
+            <p>Sex 9:00 - 19:00</p>
+            <p>Sab 9:00 - 17:00</p>
+          </FooterInfos>
+        </FooterContainer>
+
+        <Copyright>
+          <p>© 2022 L&A. All rights reserved.</p>
+        </Copyright>
+      </Footer>
     </Body>
   )
 }
@@ -335,6 +410,7 @@ const Header = styled.header`
   align-items: center;
   background-color: #ede8e7;
   box-shadow: 3px 3px 10px #888888;
+  z-index: 2;
   div:nth-child(1) {
     img {
       width: 80px;
@@ -347,10 +423,13 @@ const Nav = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  h3 {
+
+  a {
+    text-decoration: none;
     font-weight: 500;
     font-size: 18px;
     margin: 0 15px;
+    color: #000;
     cursor: pointer;
   }
 `
@@ -436,6 +515,7 @@ const Produtos = styled.div`
   align-items: center;
   overflow-x: scroll;
 `
+
 const Produto = styled.div`
   margin-top: 20px;
   display: flex;
@@ -495,4 +575,129 @@ const InformacoesProduto = styled.div`
       border-radius: 5px;
     }
   }
+`
+
+const PorqueEscolhem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: #ede8e7;
+  margin-top: 45px;
+  height: 500px;
+
+  h2 {
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 31px;
+
+    color: #311c1c;
+
+    margin-top: 45px;
+    margin-bottom: 20px;
+  }
+`
+
+const Vantagens = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+const Vantagem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 217px;
+  margin-top: 20px;
+
+  img {
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #311c1c;
+  }
+  p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #311c1c;
+  }
+`
+
+const Drops = styled.div`
+  margin-top: 20px;
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  width: 190px;
+  height: 190px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.06);
+  position: relative;
+
+  img {
+    width: 190px;
+    height: 60%;
+    border-radius: 8px;
+  }
+  img:hover {
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+`
+
+const Footer = styled.footer`
+  background-color: #ede8e7;
+  height: 290px;
+`
+
+const FooterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 50px 0px 0 0px;
+  gap: 20px;
+`
+
+const FooterInfos = styled.section`
+  margin-right: 25px;
+  margin-top: 30px;
+  h3 {
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 500;
+    color: #311c1c;
+    line-height: 18px;
+  }
+  a {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: #311c1c;
+    line-height: 20px;
+  }
+
+  p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #311c1c;
+    line-height: 20px;
+  }
+`
+
+const Copyright = styled.div`
+  margin-top: 40px;
+  border-top: 1px solid;
+  padding-top: 10px;
+  padding-left: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #b5abaa;
 `
