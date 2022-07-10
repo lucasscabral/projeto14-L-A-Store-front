@@ -1,50 +1,50 @@
-import { Container, Form, Button } from "../GlobalComponents";
-import { useNavigate, Link } from "react-router-dom";
-import logo from "../../assets/image/logo.svg";
-import styled from "styled-components";
-import { ThreeDots } from "react-loader-spinner";
-import { useState, useContext } from "react";
-import UserContext from "../../contexts/UserContext";
-import axios from "axios";
+import { Container, Form, Button } from '../GlobalComponents'
+import { useNavigate, Link } from 'react-router-dom'
+import logo from '../../assets/image/logo.svg'
+import styled from 'styled-components'
+import { ThreeDots } from 'react-loader-spinner'
+import { useState, useContext } from 'react'
+import UserContext from '../../contexts/UserContext'
+import axios from 'axios'
 
 export default function Login() {
-  const navigate = useNavigate();
-  const { setToken } = useContext(UserContext);
+  const navigate = useNavigate()
+  const { setToken } = useContext(UserContext)
 
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [loader, setLoader] = useState("Entrar");
-  const [disable, setDisable] = useState(false);
-  const [contaIncorreta, setContaIncorreta] = useState(false);
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [loader, setLoader] = useState('Entrar')
+  const [disable, setDisable] = useState(false)
+  const [contaIncorreta, setContaIncorreta] = useState(false)
 
-  const logar = (e) => {
-    e.preventDefault();
+  const logar = e => {
+    e.preventDefault()
     const body = {
       email,
-      senha,
-    };
+      senha
+    }
 
-    const promise = axios.post("http://localhost:5000/login", body);
+    const promise = axios.post('https://leastore.herokuapp.com/login', body)
 
     promise
-      .then((res) => {
-        setToken(res.data.token);
-        setDisable(true);
-        setLoader(<ThreeDots color="white" />);
-        setTimeout(() => navigate("/"), 1000);
+      .then(res => {
+        setToken(res.data.token)
+        setDisable(true)
+        setLoader(<ThreeDots color="white" />)
+        setTimeout(() => navigate('/'), 1000)
       })
-      .catch((err) => {
-        console.log(err.response.data);
-        setLoader(<ThreeDots color="white" />);
-        setDisable(true);
-        setTimeout(() => setDisable(false), 500);
-        setTimeout(() => setLoader("Entrar"), 500);
+      .catch(err => {
+        console.log(err.response.data)
+        setLoader(<ThreeDots color="white" />)
+        setDisable(true)
+        setTimeout(() => setDisable(false), 500)
+        setTimeout(() => setLoader('Entrar'), 500)
 
         if (err.response.data) {
-          setContaIncorreta(true);
+          setContaIncorreta(true)
         }
-      });
-  };
+      })
+  }
 
   return (
     <Container>
@@ -60,23 +60,23 @@ export default function Login() {
             type="email"
             placeholder="E-mail"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
           />
           <Input
             type="password"
             placeholder="Senha"
             value={senha}
-            onChange={(e) => setSenha(e.target.value)}
+            onChange={e => setSenha(e.target.value)}
           />
 
           <Button type="submit">{loader}</Button>
         </Form>
-        <Link to={"/cadastro"}>
+        <Link to={'/cadastro'}>
           <p className="vaiParaCadastro">Primeira vez? Cadastre-se!</p>
         </Link>
       </TelaLogin>
     </Container>
-  );
+  )
 }
 
 const TelaLogin = styled.div`
@@ -113,7 +113,7 @@ const TelaLogin = styled.div`
   a {
     text-decoration: none;
   }
-`;
+`
 
 const Input = styled.input`
   width: 326px;
@@ -133,4 +133,4 @@ const Input = styled.input`
     font-size: 20px;
     font-weight: 700;
   }
-`;
+`

@@ -20,6 +20,9 @@ function ProdutosMaisVendidos({
   precoProduto,
   numeroProduto,
   token,
+  sacola,
+  setSacola
+
 }) {
   const [produtoSelecionado, setProdutoSelecionado] = useState(false);
   const navigate = useNavigate();
@@ -38,10 +41,42 @@ function ProdutosMaisVendidos({
             () => {}
           )}
         </>
-      );
-    } else {
-      setProdutoSelecionado(!produtoSelecionado);
+      )
     }
+    if (!produtoSelecionado) {
+      const pedidoSelecionado = {
+        numeroProduto,
+        token
+      }
+      const promise = axios.post(
+        'http://127.0.0.1:5000/checkout',
+        pedidoSelecionado
+      )
+      promise
+        .then(response => {
+          setSacola([...sacola, response.data])
+          setProdutoSelecionado(!produtoSelecionado)
+        })
+        .catch(error => {})
+      return
+    } else {
+      const desmarcarProduto = axios.delete(
+        `http://127.0.0.1:5000/checkout/${numeroProduto}`
+      )
+      desmarcarProduto
+        .then(response => {
+          setProdutoSelecionado(!produtoSelecionado)
+          let desmarcaFavorito = sacola.filter(
+            produto => produto.numeroProduto !== response.data.numeroProduto
+          )
+          setSacola([...desmarcaFavorito])
+          console.log(desmarcaFavorito)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      return
+    } 
   }
   return (
     <Produto id={numeroProduto}>
@@ -70,6 +105,9 @@ function ProdutosOutLet({
   precoProduto,
   numeroProduto,
   token,
+  sacola,
+  setSacola
+
 }) {
   const [produtoSelecionado, setProdutoSelecionado] = useState(false);
   const navigate = useNavigate();
@@ -88,10 +126,19 @@ function ProdutosOutLet({
             () => {}
           )}
         </>
-      );
-    } else {
-      setProdutoSelecionado(!produtoSelecionado);
+
+      )
+      return
     }
+    if (!produtoSelecionado) {
+      setProdutoSelecionado(!produtoSelecionado)
+      setSacola([...sacola, numeroProduto])
+    } else {
+      setProdutoSelecionado(!produtoSelecionado)
+      let desmarcaFavorito = sacola.filter(produto => produto !== numeroProduto)
+      setSacola([...desmarcaFavorito])
+      );
+    } 
   }
   return (
     <Produto id={numeroProduto}>
@@ -116,10 +163,9 @@ function ProdutosOutLet({
 }
 
 export default function TelaHome() {
-  const { token } = useContext(UserContext);
-  const [todosProdutos, setTodosProdutos] = useState([]);
+  const { token, sacola, setSacola } = useContext(UserContext)
+  const [todosProdutos, setTodosProdutos] = useState([])
 
-  const [sacola, setSacola] = useState([]);
   const maisVendidos = todosProdutos?.filter(
     (produto) => produto.tipo === "mais_vendido"
   );
@@ -135,9 +181,9 @@ export default function TelaHome() {
     async function pegarProdutosComGet() {
       try {
         const pegaTodosProdutos = await axios.get(
-          "http://localhost:5000/produtos"
-        );
-        setTodosProdutos(pegaTodosProdutos.data);
+          'https://leastore.herokuapp.com/produtos'
+        )
+        setTodosProdutos(pegaTodosProdutos.data)
       } catch (error) {
         alert("Não conseguimos listar os produtos");
       }
@@ -156,8 +202,8 @@ export default function TelaHome() {
           <a href="#Sobre">Sobre</a>
         </Nav>
         <Buttons>
-          <Link to={""} style={{ textDecoration: "none", color: "#301B1B" }}>
-            <span>{sacola.length}</span>
+          <Link to={''} style={{ textDecoration: 'none', color: '#301B1B' }}>
+            <span>{sacola.length === 0 ? '' : sacola.length}</span>
             <img src={ImgSacola} alt="Botão de Sacola" />
           </Link>
           <Link to={"/login"}>
@@ -190,6 +236,8 @@ export default function TelaHome() {
               imgProduto={produto.imgProduto}
               numeroProduto={produto.numeroProduto}
               token={token}
+              sacola={sacola}
+              setSacola={setSacola}
             />
           ))}
         </Produtos>
@@ -206,6 +254,8 @@ export default function TelaHome() {
                 imgProduto={produto.imgProduto}
                 numeroProduto={produto.numeroProduto}
                 token={token}
+                sacola={sacola}
+                setSacola={setSacola}
               />
             ))}
           </Produtos>
@@ -504,8 +554,7 @@ const InformacoesProduto = styled.div`
       cursor: pointer;
       border-radius: 5px;
     }
-  }
-`;
+ }`;
 
 const PorqueEscolhem = styled.div`
   display: flex;
