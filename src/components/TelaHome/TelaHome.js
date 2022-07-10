@@ -16,7 +16,9 @@ function ProdutosMaisVendidos({
   imgProduto,
   precoProduto,
   numeroProduto,
-  token
+  token,
+  sacola,
+  setSacola
 }) {
   const [produtoSelecionado, setProdutoSelecionado] = useState(false)
   const navigate = useNavigate()
@@ -36,8 +38,40 @@ function ProdutosMaisVendidos({
           )}
         </>
       )
+    }
+    if (!produtoSelecionado) {
+      const pedidoSelecionado = {
+        numeroProduto,
+        token
+      }
+      const promise = axios.post(
+        'http://127.0.0.1:5000/checkout',
+        pedidoSelecionado
+      )
+      promise
+        .then(response => {
+          setSacola([...sacola, response.data])
+          setProdutoSelecionado(!produtoSelecionado)
+        })
+        .catch(error => {})
+      return
     } else {
-      setProdutoSelecionado(!produtoSelecionado)
+      const desmarcarProduto = axios.delete(
+        `http://127.0.0.1:5000/checkout/${numeroProduto}`
+      )
+      desmarcarProduto
+        .then(response => {
+          setProdutoSelecionado(!produtoSelecionado)
+          let desmarcaFavorito = sacola.filter(
+            produto => produto.numeroProduto !== response.data.numeroProduto
+          )
+          setSacola([...desmarcaFavorito])
+          console.log(desmarcaFavorito)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      return
     }
   }
   return (
@@ -66,7 +100,9 @@ function ProdutosOutLet({
   imgProduto,
   precoProduto,
   numeroProduto,
-  token
+  token,
+  sacola,
+  setSacola
 }) {
   const [produtoSelecionado, setProdutoSelecionado] = useState(false)
   const navigate = useNavigate()
@@ -86,8 +122,15 @@ function ProdutosOutLet({
           )}
         </>
       )
+      return
+    }
+    if (!produtoSelecionado) {
+      setProdutoSelecionado(!produtoSelecionado)
+      setSacola([...sacola, numeroProduto])
     } else {
       setProdutoSelecionado(!produtoSelecionado)
+      let desmarcaFavorito = sacola.filter(produto => produto !== numeroProduto)
+      setSacola([...desmarcaFavorito])
     }
   }
   return (
@@ -113,10 +156,9 @@ function ProdutosOutLet({
 }
 
 export default function TelaHome() {
-  const { token } = useContext(UserContext)
+  const { token, sacola, setSacola } = useContext(UserContext)
   const [todosProdutos, setTodosProdutos] = useState([])
 
-  const [sacola, setSacola] = useState([])
   const maisVendidos = todosProdutos?.filter(
     produto => produto.tipo === 'mais_vendido'
   )
@@ -128,7 +170,7 @@ export default function TelaHome() {
     async function pegarProdutosComGet() {
       try {
         const pegaTodosProdutos = await axios.get(
-          'http://localhost:5000/produtos'
+          'https://leastore.herokuapp.com/produtos'
         )
         setTodosProdutos(pegaTodosProdutos.data)
       } catch (error) {
@@ -150,7 +192,7 @@ export default function TelaHome() {
         </Nav>
         <Buttons>
           <Link to={''} style={{ textDecoration: 'none', color: '#301B1B' }}>
-            <span>{sacola.length}</span>
+            <span>{sacola.length === 0 ? '' : sacola.length}</span>
             <img src={ImgSacola} alt="Botão de Sacola" />
           </Link>
           <Link to={'/login'}>
@@ -184,6 +226,8 @@ export default function TelaHome() {
               imgProduto={produto.imgProduto}
               numeroProduto={produto.numeroProduto}
               token={token}
+              sacola={sacola}
+              setSacola={setSacola}
             />
           ))}
         </Produtos>
@@ -200,6 +244,8 @@ export default function TelaHome() {
                 imgProduto={produto.imgProduto}
                 numeroProduto={produto.numeroProduto}
                 token={token}
+                sacola={sacola}
+                setSacola={setSacola}
               />
             ))}
           </Produtos>
@@ -424,21 +470,3 @@ const InformacoesProduto = styled.div`
     }
   }
 `
-
-{
-  /* <Produto>
-<img
-  src={ImgFavoritar}
-  alt="icone de favoritar um produto"
-  className="Favoritar"
-/>
-<img src={ProdutoVenda} alt="Produtos mais vendidos" />
-<InformacoesProduto>
-  <span>Nome do produto</span>
-  <div>
-    <span>R$199,90</span>
-    <button>Comprar</button>
-  </div>
-</InformacoesProduto>
-</Produto> */
-}

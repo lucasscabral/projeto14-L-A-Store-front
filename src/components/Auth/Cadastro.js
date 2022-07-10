@@ -1,56 +1,59 @@
-import { Container, Form, Button } from "../GlobalComponents";
-import { useNavigate, Link } from "react-router-dom";
-import logo from "../../assets/image/logo.svg";
-import styled from "styled-components";
-import { useState } from "react";
-import axios from "axios";
-import { ThreeDots } from "react-loader-spinner";
+import { Container, Form, Button } from '../GlobalComponents'
+import { useNavigate, Link } from 'react-router-dom'
+import logo from '../../assets/image/logo.svg'
+import styled from 'styled-components'
+import { useState } from 'react'
+import axios from 'axios'
+import { ThreeDots } from 'react-loader-spinner'
 
 export default function Cadastro() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [confirmaSenha, setConfirmaSenha] = useState("");
-  const [senhaIncorreta, setSenhaIncorreta] = useState(false);
-  const [emailInvalido, setEmailInvalido] = useState(false);
-  const [loader, setLoader] = useState("Cadastrar");
-  const [disable, setDisable] = useState(false);
+  const [nome, setNome] = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [confirmaSenha, setConfirmaSenha] = useState('')
+  const [senhaIncorreta, setSenhaIncorreta] = useState(false)
+  const [emailInvalido, setEmailInvalido] = useState(false)
+  const [loader, setLoader] = useState('Cadastrar')
+  const [disable, setDisable] = useState(false)
 
-  const cadastrar = (e) => {
-    e.preventDefault();
+  const cadastrar = e => {
+    e.preventDefault()
     if (senha !== confirmaSenha) {
-      setSenhaIncorreta(true);
+      setSenhaIncorreta(true)
     } else {
-      setSenhaIncorreta(false);
+      setSenhaIncorreta(false)
       const body = {
         nome,
         email,
-        senha,
-      };
-      console.log(body);
+        senha
+      }
+      console.log(body)
 
-      const promise = axios.post("http://localhost:5000/cadastro", body);
+      const promise = axios.post(
+        'https://leastore.herokuapp.com/cadastro',
+        body
+      )
 
       promise
-        .then((res) => {
-          setDisable(true);
-          setLoader(<ThreeDots color="white" />);
-          setTimeout(() => navigate("/login"), 1000);
+        .then(res => {
+          setDisable(true)
+          setLoader(<ThreeDots color="white" />)
+          setTimeout(() => navigate('/login'), 1000)
         })
-        .catch((err) => {
-          setLoader(<ThreeDots color="white" />);
-          setDisable(true);
-          setTimeout(() => setDisable(false), 500);
-          setTimeout(() => setLoader("Cadastrar"), 500);
+        .catch(err => {
+          setLoader(<ThreeDots color="white" />)
+          setDisable(true)
+          setTimeout(() => setDisable(false), 500)
+          setTimeout(() => setLoader('Cadastrar'), 500)
 
           if (err.response.status) {
-            setEmailInvalido(true);
+            setEmailInvalido(true)
           }
-        });
+        })
     }
-  };
+  }
 
   return (
     <Container>
@@ -63,7 +66,7 @@ export default function Cadastro() {
             type="text"
             placeholder="Nome"
             value={nome}
-            onChange={(e) => setNome(e.target.value)}
+            onChange={e => setNome(e.target.value)}
             required
           />
 
@@ -77,7 +80,7 @@ export default function Cadastro() {
             type="email"
             placeholder="E-mail"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
             required
           />
           <Input
@@ -85,8 +88,8 @@ export default function Cadastro() {
             type="password"
             placeholder="Senha"
             value={senha}
-            onChange={(e) => {
-              setSenha(e.target.value);
+            onChange={e => {
+              setSenha(e.target.value)
             }}
             required
           />
@@ -100,18 +103,18 @@ export default function Cadastro() {
             type="password"
             placeholder="Confirme a senha"
             value={confirmaSenha}
-            onChange={(e) => setConfirmaSenha(e.target.value)}
+            onChange={e => setConfirmaSenha(e.target.value)}
             required
           />
 
           <Button type="submit">{loader}</Button>
         </Form>
-        <Link to={"/login"}>
+        <Link to={'/login'}>
           <p className="vaiParaLogin">Já tem uma conta? Entre agora!</p>
         </Link>
       </TelaCadastro>
     </Container>
-  );
+  )
 }
 
 const TelaCadastro = styled.div`
@@ -148,7 +151,7 @@ const TelaCadastro = styled.div`
   a {
     text-decoration: none;
   }
-`;
+`
 
 const Input = styled.input`
   width: 326px;
@@ -168,4 +171,4 @@ const Input = styled.input`
     font-size: 20px;
     font-weight: 700;
   }
-`;
+`
