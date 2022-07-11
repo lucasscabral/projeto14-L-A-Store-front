@@ -205,7 +205,7 @@ export default function TelaHome() {
     async function pegarProdutosComGet() {
       try {
         const pegaTodosProdutos = await axios.get(
-          'http://localhost:5000/produtos'
+          'https://leastore.herokuapp.com/produtos'
         )
         setTodosProdutos(pegaTodosProdutos.data)
       } catch (error) {
@@ -226,7 +226,10 @@ export default function TelaHome() {
           <a href="#Sobre">Sobre</a>
         </Nav>
         <Buttons>
-          <Link to={''} style={{ textDecoration: 'none', color: '#301B1B' }}>
+          <Link
+            to={'/checkout'}
+            style={{ textDecoration: 'none', color: '#301B1B' }}
+          >
             <span>{sacola.length === 0 ? '' : sacola.length}</span>
             <img src={ImgSacola} alt="Botão de Sacola" />
           </Link>
@@ -240,43 +243,13 @@ export default function TelaHome() {
                 src={ImgLogOut}
                 alt="Botão de LogOut"
                 onClick={() => {
-                  Report.init({
-                    className: 'notiflix-report',
-                    width: '320px',
-                    backgroundColor: '#f8f8f8',
-                    borderRadius: '25px',
-                    rtl: false,
-                    zindex: 4002,
-                    backOverlay: true,
-                    backOverlayColor: 'rgba(0,0,0,0.5)',
-                    backOverlayClickToClose: false,
-                    fontFamily: 'Quicksand',
-                    svgSize: '110px',
-                    plainText: true,
-                    titleFontSize: '16px',
-                    titleMaxLength: 34,
-                    messageFontSize: '13px',
-                    messageMaxLength: 400,
-                    buttonFontSize: '14px',
-                    buttonMaxLength: 34,
-                    cssAnimation: true,
-                    cssAnimationDuration: 360,
-                    cssAnimationStyle: 'fade',
-                    success: {
-                      svgColor: '#301B1B',
-                      titleColor: '#1e1e1e',
-                      messageColor: '#242424',
-                      buttonBackground: '#301B1B',
-                      buttonColor: '#fff',
-                      backOverlayColor: 'rgba(49, 28, 28,0.2)'
-                    }
-                  })
                   Report.success(
                     'Saída com sucesso',
-                    'Obrigado Por Visitar no site! volte sempre',
+                    'Obrigado Por Visitar nosso site! volte sempre',
                     'Okay'
                   )
                   setToken('')
+                  setSacola([])
                 }}
               />
             </Link>
@@ -407,6 +380,38 @@ export default function TelaHome() {
     </Body>
   )
 }
+// CONFIG DO POPUP DE SAIR DO SITE
+Report.init({
+  className: 'notiflix-report',
+  width: '320px',
+  backgroundColor: '#f8f8f8',
+  borderRadius: '25px',
+  rtl: false,
+  zindex: 4002,
+  backOverlay: true,
+  backOverlayColor: 'rgba(0,0,0,0.5)',
+  backOverlayClickToClose: false,
+  fontFamily: 'Quicksand',
+  svgSize: '110px',
+  plainText: true,
+  titleFontSize: '16px',
+  titleMaxLength: 34,
+  messageFontSize: '13px',
+  messageMaxLength: 400,
+  buttonFontSize: '14px',
+  buttonMaxLength: 34,
+  cssAnimation: true,
+  cssAnimationDuration: 360,
+  cssAnimationStyle: 'fade',
+  success: {
+    svgColor: '#301B1B',
+    titleColor: '#1e1e1e',
+    messageColor: '#242424',
+    buttonBackground: '#301B1B',
+    buttonColor: '#fff',
+    backOverlayColor: 'rgba(49, 28, 28,0.2)'
+  }
+})
 
 // CONFIGURAR O ESTILO DO POPUP
 Confirm.init({
