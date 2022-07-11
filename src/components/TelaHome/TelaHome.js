@@ -50,7 +50,7 @@ function ProdutosMaisVendidos({
     }
     if (!produtoSelecionado) {
       const promise = axios.post(
-        'http://127.0.0.1:5000/checkout',
+        'https://leastore.herokuapp.com/checkout',
         pedidoSelecionado,
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -63,7 +63,7 @@ function ProdutosMaisVendidos({
       return
     } else {
       const desmarcarProduto = axios.put(
-        `http://127.0.0.1:5000/checkout`,
+        `https://leastore.herokuapp.com/checkout`,
         pedidoSelecionado,
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -136,7 +136,7 @@ function ProdutosOutLet({
     }
     if (!produtoSelecionado) {
       const promise = axios.post(
-        'http://127.0.0.1:5000/checkout',
+        'https://leastore.herokuapp.com/checkout',
         pedidoSelecionado,
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -149,7 +149,7 @@ function ProdutosOutLet({
       return
     } else {
       const desmarcarProduto = axios.put(
-        `http://127.0.0.1:5000/checkout`,
+        `https://leastore.herokuapp.com/checkout`,
         pedidoSelecionado,
         { headers: { Authorization: `Bearer ${token}` } }
       )
