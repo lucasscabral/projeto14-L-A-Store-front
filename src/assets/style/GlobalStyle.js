@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
 html,
@@ -105,7 +105,8 @@ section {
 }
 body {
   line-height: 1;
-
+  padding: 0;
+  margin: 0;
 
 }
 ol,
@@ -137,6 +138,6 @@ table {
     font-family: 'Libre Bodoni', serif;
 }
 
-`;
+`
 
-export default GlobalStyle;
+export default GlobalStyle
