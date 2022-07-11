@@ -21,8 +21,12 @@ function ProdutosMaisVendidos({
   numeroProduto,
   token,
 }) {
-  const [produtoSelecionado, setProdutoSelecionado] = useState(false);
-  const navigate = useNavigate();
+  const pedidoSelecionado = {
+    numeroProduto
+  }
+  const [produtoSelecionado, setProdutoSelecionado] = useState(false)
+  const navigate = useNavigate()
+
   function selecionarPedido() {
     if (token === "") {
       return (
@@ -38,9 +42,39 @@ function ProdutosMaisVendidos({
             () => {}
           )}
         </>
-      );
+      )
+    }
+    if (!produtoSelecionado) {
+      const promise = axios.post(
+        'http://127.0.0.1:5000/checkout',
+        pedidoSelecionado,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      promise
+        .then(response => {
+          setSacola([...sacola, response.data])
+          setProdutoSelecionado(!produtoSelecionado)
+        })
+        .catch(error => {})
+      return
     } else {
-      setProdutoSelecionado(!produtoSelecionado);
+      const desmarcarProduto = axios.put(
+        `http://127.0.0.1:5000/checkout`,
+        pedidoSelecionado,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      desmarcarProduto
+        .then(response => {
+          setProdutoSelecionado(!produtoSelecionado)
+          let desmarcaFavorito = sacola.filter(
+            produto => produto.numeroProduto !== response.data.numeroProduto
+          )
+          setSacola([...desmarcaFavorito])
+        })
+        .catch(error => {
+          alert(error.response.data)
+        })
+      return
     }
   }
   return (
@@ -71,8 +105,12 @@ function ProdutosOutLet({
   numeroProduto,
   token,
 }) {
-  const [produtoSelecionado, setProdutoSelecionado] = useState(false);
-  const navigate = useNavigate();
+  const pedidoSelecionado = {
+    numeroProduto
+  }
+  const [produtoSelecionado, setProdutoSelecionado] = useState(false)
+  const navigate = useNavigate()
+
   function selecionarPedido() {
     if (token === "") {
       return (
@@ -88,9 +126,39 @@ function ProdutosOutLet({
             () => {}
           )}
         </>
-      );
+      )
+    }
+    if (!produtoSelecionado) {
+      const promise = axios.post(
+        'http://127.0.0.1:5000/checkout',
+        pedidoSelecionado,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      promise
+        .then(response => {
+          setSacola([...sacola, response.data])
+          setProdutoSelecionado(!produtoSelecionado)
+        })
+        .catch(error => {})
+      return
     } else {
-      setProdutoSelecionado(!produtoSelecionado);
+      const desmarcarProduto = axios.put(
+        `http://127.0.0.1:5000/checkout`,
+        pedidoSelecionado,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      desmarcarProduto
+        .then(response => {
+          setProdutoSelecionado(!produtoSelecionado)
+          let desmarcaFavorito = sacola.filter(
+            produto => produto.numeroProduto !== response.data.numeroProduto
+          )
+          setSacola([...desmarcaFavorito])
+        })
+        .catch(error => {
+          alert(error.response.data)
+        })
+      return
     }
   }
   return (
