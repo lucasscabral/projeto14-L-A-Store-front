@@ -81,6 +81,35 @@ function ProdutosMaisVendidos({
       return
     }
   }
+  function comprarUmProduto() {
+    if (token === '') {
+      return (
+        <>
+          {Confirm.show(
+            'Vi que você não está logado',
+            'Quer fazer login?',
+            'Sim',
+            'Não',
+            () => {
+              navigate('/login')
+            },
+            () => {}
+          )}
+        </>
+      )
+    }
+    const promise = axios.post(
+      'https://leastore.herokuapp.com/checkout',
+      pedidoSelecionado,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    promise
+      .then(response => {
+        setSacola([...sacola, response.data])
+        navigate('/checkout')
+      })
+      .catch(error => {})
+  }
   return (
     <Produto id={numeroProduto}>
       <img
@@ -96,7 +125,9 @@ function ProdutosMaisVendidos({
         <span>{nomeProduto}</span>
         <div>
           <span>R$ {precoProduto}</span>
-          <button>Comprar</button>
+          {/* AO CLICAR EM COMPRAR, VOCÊ SERA REDIRECIONADO PARA A TELA DE CHECKOUT
+           COM O PRODUTO QUE VOCÊ APERTOU NO BOTÃO DE COMPRAR */}
+          <button onClick={comprarUmProduto}>Comprar</button>
         </div>
       </InformacoesProduto>
     </Produto>
@@ -167,6 +198,36 @@ function ProdutosOutLet({
       return
     }
   }
+  function comprarUmProduto() {
+    if (token === '') {
+      return (
+        <>
+          {Confirm.show(
+            'Vi que você não está logado',
+            'Quer fazer login?',
+            'Sim',
+            'Não',
+            () => {
+              navigate('/login')
+            },
+            () => {}
+          )}
+        </>
+      )
+    }
+    const promise = axios.post(
+      'https://leastore.herokuapp.com/checkout',
+      pedidoSelecionado,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    promise
+      .then(response => {
+        setSacola([...sacola, response.data])
+        navigate('/checkout')
+      })
+      .catch(error => {})
+  }
+
   return (
     <Produto id={numeroProduto}>
       <img
@@ -182,7 +243,9 @@ function ProdutosOutLet({
         <span>{nomeProduto}</span>
         <div>
           <span>R$ {precoProduto}</span>
-          <button>Comprar</button>
+          {/* AO CLICAR EM COMPRAR, VOCÊ SERA REDIRECIONADO PARA A TELA DE CHECKOUT
+           COM O PRODUTO QUE VOCÊ APERTOU NO BOTÃO DE COMPRAR */}
+          <button onClick={comprarUmProduto}>Comprar</button>
         </div>
       </InformacoesProduto>
     </Produto>
@@ -192,6 +255,7 @@ function ProdutosOutLet({
 export default function TelaHome() {
   const { token, setToken, sacola, setSacola } = useContext(UserContext)
   const [todosProdutos, setTodosProdutos] = useState([])
+  const navigate = useNavigate()
   const maisVendidos = todosProdutos?.filter(
     produto => produto.tipo === 'mais_vendido'
   )
@@ -226,13 +290,28 @@ export default function TelaHome() {
           <a href="#Sobre">Sobre</a>
         </Nav>
         <Buttons>
-          <Link
-            to={'/checkout'}
-            style={{ textDecoration: 'none', color: '#301B1B' }}
-          >
-            <span>{sacola.length === 0 ? '' : sacola.length}</span>
-            <img src={ImgSacola} alt="Botão de Sacola" />
-          </Link>
+          <div className="botao-sacola">
+            <Link
+              to={sacola.length === 0 ? '' : '/checkout'}
+              style={{ textDecoration: 'none', color: '#301B1B' }}
+            >
+              <span>{sacola.length === 0 ? '' : sacola.length}</span>
+              <img
+                src={ImgSacola}
+                alt="Botão de Sacola"
+                onClick={() => {
+                  if (sacola.length === 0) {
+                    Report.info(
+                      'Sua Sacola está vazia',
+                      'Selecione algum item para comprar',
+                      'Okay'
+                    )
+                    navigate('/')
+                  }
+                }}
+              />
+            </Link>
+          </div>
           {token === '' ? (
             <Link to={'/login'}>
               <img src={ImgLoginCadastro} alt="Botão de Login ou Cadastro" />
@@ -287,25 +366,23 @@ export default function TelaHome() {
           ))}
         </Produtos>
       </ListaProdutos>
-      <scroll-container>
-        <ListaProdutos id="OutLet">
-          <h2>OutLet</h2>
-          <Produtos>
-            {produtosOutlet?.map((produto, id) => (
-              <ProdutosOutLet
-                key={id}
-                nomeProduto={produto.nome}
-                precoProduto={produto.preco}
-                imgProduto={produto.imgProduto}
-                numeroProduto={produto.numeroProduto}
-                token={token}
-                sacola={sacola}
-                setSacola={setSacola}
-              />
-            ))}
-          </Produtos>
-        </ListaProdutos>
-      </scroll-container>
+      <ListaProdutos id="OutLet">
+        <h2>OutLet</h2>
+        <Produtos>
+          {produtosOutlet?.map((produto, id) => (
+            <ProdutosOutLet
+              key={id}
+              nomeProduto={produto.nome}
+              precoProduto={produto.preco}
+              imgProduto={produto.imgProduto}
+              numeroProduto={produto.numeroProduto}
+              token={token}
+              sacola={sacola}
+              setSacola={setSacola}
+            />
+          ))}
+        </Produtos>
+      </ListaProdutos>
       <PorqueEscolhem id="Sobre">
         <h2>
           Porque as pessoas <br /> escolhem a gente
@@ -315,16 +392,17 @@ export default function TelaHome() {
             <img src={ImgEstrela} alt="" />
             <h3>Alta qualidade</h3>
             <p>
-              Todos os nossos produtos passam por uma inspeção muito rigorosa
-              antes de despachá-los
+              Nossos produtos passam por um processo rigoroso de inspeção antes
+              de serem despachados.
             </p>
           </Vantagem>
           <Vantagem>
             <img src={ImgReturn} alt="" />
             <h3>Retorno fácil</h3>
             <p>
-              Nossa política de devolução é simples e é por isso que os clientes
-              adoram nossa loja
+              Nossa política de devolução é simples , o cliente tem até 30 dias
+              após a entrega para entrar em contato caso não esteja satisfeito
+              com o produto.
             </p>
           </Vantagem>
         </Vantagens>
@@ -333,7 +411,7 @@ export default function TelaHome() {
           <h3>Atendimento ao Cliente</h3>
           <p>
             Oferecemos um atendimento ao cliente incrível, não importa o que
-            aconteça
+            aconteça.Para mais informações ligue para (99) 9 9999-9999
           </p>
         </Vantagem>
       </PorqueEscolhem>
@@ -413,7 +491,7 @@ Report.init({
   }
 })
 
-// CONFIGURAR O ESTILO DO POPUP
+// CONFIGURAR O ESTILO DO POPUP DE FAZER LOGIN
 Confirm.init({
   className: 'notiflix-confirm',
   width: '300px',
@@ -444,15 +522,49 @@ Confirm.init({
   cancelButtonBackground: '#a9a9a9'
 })
 
+Report.init({
+  className: 'notiflix-report',
+  width: '320px',
+  backgroundColor: '#f8f8f8',
+  borderRadius: '25px',
+  rtl: false,
+  zindex: 4002,
+  backOverlay: true,
+  backOverlayColor: 'rgba(0,0,0,0.5)',
+  backOverlayClickToClose: false,
+  fontFamily: 'Quicksand',
+  svgSize: '110px',
+  plainText: true,
+  titleFontSize: '16px',
+  titleMaxLength: 34,
+  messageFontSize: '13px',
+  messageMaxLength: 400,
+  buttonFontSize: '14px',
+  buttonMaxLength: 34,
+  cssAnimation: true,
+  cssAnimationDuration: 360,
+  cssAnimationStyle: 'fade',
+  info: {
+    svgColor: '#301B1B',
+    titleColor: '#1e1e1e',
+    messageColor: '#242424',
+    buttonBackground: '#301B1B',
+    buttonColor: '#fff',
+    backOverlayColor: 'rgba(49, 28, 28,0.2)'
+  }
+})
+
 const Body = styled.main`
+  padding: 0;
+  width: 100%;
   height: 100%;
   overflow-y: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   ::-webkit-scrollbar {
     display: none;
-  }
-  scroll-container {
-    overflow: scroll;
-    scroll-behavior: smooth;
   }
 `
 const Header = styled.header`
@@ -495,18 +607,28 @@ const Buttons = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-
   img {
-    width: 25px;
-    height: 25px;
+    max-width: 25px;
+    max-height: 25px;
     margin: 0px 0.5rem;
     cursor: pointer;
     z-index: 1;
   }
-  span {
-    position: absolute;
-    top: 29px;
-    right: 80px;
+  .botao-sacola {
+    width: 35px;
+    position: relative;
+    img {
+      max-width: 25px;
+      max-height: 25px;
+      margin: 0px 0.5rem;
+      cursor: pointer;
+      z-index: 1;
+    }
+    span {
+      position: absolute;
+      left: 30px;
+      bottom: 18px;
+    }
   }
 `
 const BanerOfertas = styled.div`
@@ -558,6 +680,7 @@ const ProdutoOferta = styled.div`
   }
 `
 const ListaProdutos = styled.div`
+  width: 100%;
   padding-left: 10px;
   box-sizing: border-box;
   margin-top: 45px;
@@ -569,10 +692,11 @@ const ListaProdutos = styled.div`
 `
 const Produtos = styled.div`
   padding-right: 5px;
+  width: 100%;
   display: flex;
   gap: 20px;
   align-items: center;
-  overflow-x: scroll;
+  overflow-x: auto;
 `
 
 const Produto = styled.div`
@@ -640,7 +764,7 @@ const PorqueEscolhem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  width: 100%;
   background-color: #ede8e7;
   margin-top: 45px;
   height: 500px;
@@ -649,9 +773,7 @@ const PorqueEscolhem = styled.div`
     font-size: 25px;
     font-weight: 700;
     line-height: 31px;
-
     color: #311c1c;
-
     margin-top: 45px;
     margin-bottom: 20px;
   }
@@ -668,9 +790,8 @@ const Vantagem = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 217px;
+  max-width: 217px;
   margin-top: 20px;
-
   img {
     margin-bottom: 10px;
   }
@@ -690,14 +811,13 @@ const Vantagem = styled.div`
 
 const Drops = styled.div`
   margin-top: 20px;
-  margin-bottom: 100px;
+  margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   width: 190px;
-  height: 190px;
+  height: 100%;
   border-radius: 8px;
   background-color: rgba(0, 0, 0, 0.06);
-  position: relative;
 
   img {
     width: 190px;
@@ -711,6 +831,7 @@ const Drops = styled.div`
 `
 
 const Footer = styled.footer`
+  width: 100%;
   background-color: #ede8e7;
   height: 290px;
 `
