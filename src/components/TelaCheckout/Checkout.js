@@ -141,6 +141,10 @@ const Input = styled.input`
 `;
 
 const Header = styled.header`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   box-sizing: border-box;
   display: flex;
   align-items: center;
