@@ -33,6 +33,6 @@ export const Button = styled.button`
   background-color: #311c1c;
 
   svg {
-    height: 1rem;
+    height: 10px;
   }
 `;
