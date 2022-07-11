@@ -32,7 +32,7 @@ function Pedidos({
           numeroProduto
         }
         const retirarProdutoSacola = axios.put(
-          `http://127.0.0.1:5000/checkout`,
+          `https://leastore.herokuapp.com/checkout`,
           pedidoSelecionado,
           { headers: { Authorization: `Bearer ${token}` } }
         )
