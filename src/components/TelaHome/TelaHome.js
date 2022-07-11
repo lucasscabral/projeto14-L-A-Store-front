@@ -23,6 +23,9 @@ function ProdutosMaisVendidos({
   sacola,
   setSacola
 }) {
+  const pedidoSelecionado = {
+    numeroProduto
+  }
   const [produtoSelecionado, setProdutoSelecionado] = useState(false)
   const navigate = useNavigate()
   function selecionarPedido() {
@@ -43,13 +46,10 @@ function ProdutosMaisVendidos({
       )
     }
     if (!produtoSelecionado) {
-      const pedidoSelecionado = {
-        numeroProduto,
-        token
-      }
       const promise = axios.post(
         'http://127.0.0.1:5000/checkout',
-        pedidoSelecionado
+        pedidoSelecionado,
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       promise
         .then(response => {
@@ -59,8 +59,10 @@ function ProdutosMaisVendidos({
         .catch(error => {})
       return
     } else {
-      const desmarcarProduto = axios.delete(
-        `http://127.0.0.1:5000/checkout/${numeroProduto}`
+      const desmarcarProduto = axios.put(
+        `http://127.0.0.1:5000/checkout`,
+        pedidoSelecionado,
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       desmarcarProduto
         .then(response => {
@@ -69,10 +71,9 @@ function ProdutosMaisVendidos({
             produto => produto.numeroProduto !== response.data.numeroProduto
           )
           setSacola([...desmarcaFavorito])
-          console.log(desmarcaFavorito)
         })
         .catch(error => {
-          console.log(error)
+          alert(error.response.data)
         })
       return
     }
@@ -107,6 +108,9 @@ function ProdutosOutLet({
   sacola,
   setSacola
 }) {
+  const pedidoSelecionado = {
+    numeroProduto
+  }
   const [produtoSelecionado, setProdutoSelecionado] = useState(false)
   const navigate = useNavigate()
   function selecionarPedido() {
@@ -125,16 +129,12 @@ function ProdutosOutLet({
           )}
         </>
       )
-      return
     }
     if (!produtoSelecionado) {
-      const pedidoSelecionado = {
-        numeroProduto,
-        token
-      }
       const promise = axios.post(
         'http://127.0.0.1:5000/checkout',
-        pedidoSelecionado
+        pedidoSelecionado,
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       promise
         .then(response => {
@@ -144,8 +144,10 @@ function ProdutosOutLet({
         .catch(error => {})
       return
     } else {
-      const desmarcarProduto = axios.delete(
-        `http://127.0.0.1:5000/checkout/${numeroProduto}`
+      const desmarcarProduto = axios.put(
+        `http://127.0.0.1:5000/checkout`,
+        pedidoSelecionado,
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       desmarcarProduto
         .then(response => {
@@ -154,10 +156,9 @@ function ProdutosOutLet({
             produto => produto.numeroProduto !== response.data.numeroProduto
           )
           setSacola([...desmarcaFavorito])
-          console.log(desmarcaFavorito)
         })
         .catch(error => {
-          console.log(error)
+          alert(error.response.data)
         })
       return
     }

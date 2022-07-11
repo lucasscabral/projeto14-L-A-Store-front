@@ -10,7 +10,6 @@ import { useState } from 'react'
 export default function App() {
   const [token, setToken] = useState('')
   const [sacola, setSacola] = useState([])
-  console.log(sacola)
   return (
     <>
       <GlobalStyle />
