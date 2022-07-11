@@ -1,48 +1,47 @@
-import styled from "styled-components";
-import { useEffect, useState, useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
-import UserContext from "../../contexts/UserContext";
-import logo from "../../assets/image/logo.svg";
-import ImgSacola from "../../assets/image/imgsacola.png";
-import ImgLoginCadastro from "../../assets/image/imglogincadastro.png";
-import logout from "../../assets/image/logout.svg";
-import excluir from "../../assets/image/excluir.svg";
-import { Form } from "../GlobalComponents";
+import styled from 'styled-components'
+import { useEffect, useState, useContext } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import axios from 'axios'
+import UserContext from '../../contexts/UserContext'
+import logo from '../../assets/image/logo.svg'
+import ImgSacola from '../../assets/image/imgsacola.png'
+import ImgLoginCadastro from '../../assets/image/imglogincadastro.png'
+import logout from '../../assets/image/logout.svg'
+import excluir from '../../assets/image/excluir.svg'
+import { Form } from '../GlobalComponents'
 
 export default function Checkout() {
-  const { sacola } = useContext(UserContext);
-  const { token } = useContext(UserContext);
+  const { sacola, token } = useContext(UserContext)
 
-  const [todosProdutos, setTodosProdutos] = useState();
+  const [todosProdutos, setTodosProdutos] = useState()
 
-  console.log(todosProdutos);
+  console.log(todosProdutos)
   useEffect(() => {
     async function pegarProdutos() {
       try {
-        const produtos = await axios.get("http://127.0.0.1:5000/checkout");
-        setTodosProdutos(produtos.data);
+        const produtos = await axios.get('http://127.0.0.1:5000/checkout')
+        setTodosProdutos(produtos.data)
       } catch (error) {}
     }
-    pegarProdutos();
-  }, []);
+    pegarProdutos()
+  }, [])
   // return todosProdutos?.map(() => <div>{todosProdutos.nome}</div>);
   return (
     <>
       <Header>
         <Nav>
-          <Link to={"/"}>Home</Link>
+          <Link to={'/'}>Home</Link>
         </Nav>
 
         <img width={80} height={86} src={logo} alt="logo da loja" />
 
         <Buttons>
-          {token === "" ? (
-            <Link to={"/login"}>
+          {token === '' ? (
+            <Link to={'/login'}>
               <img src={ImgLoginCadastro} alt="Botão de Login ou Cadastro" />
             </Link>
           ) : (
-            <Link to={"/login"}>
+            <Link to={'/login'}>
               <img
                 width={28}
                 height={28}
@@ -64,7 +63,7 @@ export default function Checkout() {
             <img width={100} height={100} src={logo} alt="" />
             <h3>Sapato nike</h3>
             <h2>R$ 299.90</h2>
-            <img style={{ cursor: "pointer" }} src={excluir} alt="" />
+            <img style={{ cursor: 'pointer' }} src={excluir} alt="" />
           </InfoPedido>
         </Pedido>
       </ListaPedidos>
@@ -91,7 +90,7 @@ export default function Checkout() {
         </Form>
       </Pagamento>
     </>
-  );
+  )
 }
 
 const Pagamento = styled.div`
@@ -119,7 +118,7 @@ const Pagamento = styled.div`
     height: 50px;
     width: 100%;
   }
-`;
+`
 const Input = styled.input`
   width: 326px;
   height: 58px;
@@ -138,7 +137,7 @@ const Input = styled.input`
     font-size: 16px;
     font-weight: 700;
   }
-`;
+`
 
 const Header = styled.header`
   position: fixed;
@@ -152,14 +151,14 @@ const Header = styled.header`
   padding: 5px 40px;
   box-shadow: 3px 3px 10px #888888;
   z-index: 2;
-`;
+`
 
 const ResumoPedido = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
+`
 
 const Nav = styled.div`
   width: 100%;
@@ -173,14 +172,14 @@ const Nav = styled.div`
     color: #000;
     cursor: pointer;
   }
-`;
+`
 
 const Buttons = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-`;
+`
 
 const ListaPedidos = styled.div`
   padding: 0 10px;
@@ -191,13 +190,13 @@ const ListaPedidos = styled.div`
     font-size: 25px;
     margin-left: 5px;
   }
-`;
+`
 
 const Pedido = styled.div`
   border: 1px solid #b7bac0;
   padding: 5px 10px;
   margin-top: 20px;
-`;
+`
 
 const InfoPedido = styled.div`
   display: flex;
@@ -207,7 +206,7 @@ const InfoPedido = styled.div`
   h2 {
     font-size: 18px;
   }
-`;
+`
 
 const ConfirmaPedido = styled.div`
   margin-top: 20px;
@@ -223,4 +222,4 @@ const ConfirmaPedido = styled.div`
     height: 50px;
     width: 100px;
   }
-`;
+`
