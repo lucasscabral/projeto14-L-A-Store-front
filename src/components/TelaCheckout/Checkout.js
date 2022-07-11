@@ -1,37 +1,80 @@
 import styled from 'styled-components'
-import { useEffect, useState, useContext } from 'react'
-import { useNavigate, Link, Navigate } from 'react-router-dom'
+import { useState, useContext } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
 import UserContext from '../../contexts/UserContext'
 import logo from '../../assets/image/logo.svg'
-import ImgSacola from '../../assets/image/imgsacola.png'
 import ImgLoginCadastro from '../../assets/image/imglogincadastro.png'
 import logout from '../../assets/image/logout.svg'
 import excluir from '../../assets/image/excluir.svg'
 import { Form } from '../GlobalComponents'
 import { Notify } from 'notiflix'
+import { Confirm } from 'notiflix/build/notiflix-confirm-aio'
+import { Report } from 'notiflix/build/notiflix-report-aio'
+
+function Pedidos({
+  imgProduto,
+  preco,
+  nome,
+  numeroProduto,
+  sacola,
+  setSacola,
+  token
+}) {
+  function excluirProduto() {
+    Confirm.show(
+      'Confirmar remoção do produto',
+      'Você quer remover esse produto da sua sacola?',
+      'Sim',
+      'Não',
+      () => {
+        const pedidoSelecionado = {
+          numeroProduto
+        }
+        const retirarProdutoSacola = axios.put(
+          `http://127.0.0.1:5000/checkout`,
+          pedidoSelecionado,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        retirarProdutoSacola
+          .then(response => {
+            let retirarProduto = sacola.filter(
+              produto => produto.numeroProduto !== response.data.numeroProduto
+            )
+            setSacola([...retirarProduto])
+          })
+          .catch(error => {
+            alert(error.response.data)
+          })
+      },
+      () => {}
+    )
+  }
+  return (
+    <Pedido id={numeroProduto}>
+      <InfoPedido>
+        <img width={100} height={100} src={imgProduto} alt="" />
+        <h3>{nome}</h3>
+        <h2>R$ {preco}</h2>
+        <img
+          style={{ cursor: 'pointer' }}
+          src={excluir}
+          alt=""
+          onClick={excluirProduto}
+        />
+      </InfoPedido>
+    </Pedido>
+  )
+}
 
 export default function Checkout() {
-  const { sacola, token } = useContext(UserContext)
-
-  const navigate = useNavigate()
-
-  const [todosProdutos, setTodosProdutos] = useState()
+  const { sacola, setSacola, token, setToken } = useContext(UserContext)
   const [dadosPagamento, setDadosPagamento] = useState(false)
   const [numeroCartao, setNumeroCartao] = useState('')
   const [ccv, setCcv] = useState('')
-
-  console.log(todosProdutos)
-  useEffect(() => {
-    async function pegarProdutos() {
-      try {
-        const produtos = await axios.get('http://127.0.0.1:5000/checkout')
-        setTodosProdutos(produtos.data)
-      } catch (error) {}
-    }
-    pegarProdutos()
-  }, [])
-  // return todosProdutos?.map(() => <div>{todosProdutos.nome}</div>);
+  const navigate = useNavigate()
+  let totalPedido = 0
+  sacola?.map(produtos => (totalPedido += parseFloat(produtos.preco)))
 
   function dadosDoPagamento(e) {
     e.preventDefault()
@@ -41,6 +84,7 @@ export default function Checkout() {
   function pagamento(e) {
     e.preventDefault()
     Notify.success('Pagamento efetuado!')
+    setSacola([])
     navigate('/')
   }
   return (
@@ -58,12 +102,21 @@ export default function Checkout() {
               <img src={ImgLoginCadastro} alt="Botão de Login ou Cadastro" />
             </Link>
           ) : (
-            <Link to={'/login'}>
+            <Link to={'/'}>
               <img
                 width={28}
                 height={28}
                 src={logout}
-                alt="Botão de Login ou Cadastro"
+                alt="Botão de Logout"
+                onClick={() => {
+                  Report.success(
+                    'Saída com sucesso',
+                    'Obrigado Por Visitar nosso site! volte sempre',
+                    'Okay'
+                  )
+                  setToken('')
+                  setSacola([])
+                }}
               />
             </Link>
           )}
@@ -72,17 +125,20 @@ export default function Checkout() {
       <ListaPedidos>
         <ResumoPedido>
           <h2>Resumo do pedido</h2>
-          <h3>Total: R$ 299,90</h3>
+          <h3>Total: R$ {totalPedido.toFixed(2)}</h3>
         </ResumoPedido>
-
-        <Pedido>
-          <InfoPedido>
-            <img width={100} height={100} src={logo} alt="" />
-            <h3>Sapato nike</h3>
-            <h2>R$ 299.90</h2>
-            <img style={{ cursor: 'pointer' }} src={excluir} alt="" />
-          </InfoPedido>
-        </Pedido>
+        {sacola?.map((pedidos, id) => (
+          <Pedidos
+            key={id}
+            imgProduto={pedidos.imgProduto}
+            preco={pedidos.preco}
+            nome={pedidos.nome}
+            numeroProduto={pedidos.numeroProduto}
+            sacola={sacola}
+            setSacola={setSacola}
+            token={token}
+          />
+        ))}
       </ListaPedidos>
 
       <ConfirmaPedido>
@@ -139,6 +195,69 @@ export default function Checkout() {
     </>
   )
 }
+
+// CONFIG DO POPUP DE SAIR DO SITE
+Report.init({
+  className: 'notiflix-report',
+  width: '320px',
+  backgroundColor: '#f8f8f8',
+  borderRadius: '25px',
+  rtl: false,
+  zindex: 4002,
+  backOverlay: true,
+  backOverlayColor: 'rgba(0,0,0,0.5)',
+  backOverlayClickToClose: false,
+  fontFamily: 'Quicksand',
+  svgSize: '110px',
+  plainText: true,
+  titleFontSize: '16px',
+  titleMaxLength: 34,
+  messageFontSize: '13px',
+  messageMaxLength: 400,
+  buttonFontSize: '14px',
+  buttonMaxLength: 34,
+  cssAnimation: true,
+  cssAnimationDuration: 360,
+  cssAnimationStyle: 'fade',
+  success: {
+    svgColor: '#301B1B',
+    titleColor: '#1e1e1e',
+    messageColor: '#242424',
+    buttonBackground: '#301B1B',
+    buttonColor: '#fff',
+    backOverlayColor: 'rgba(49, 28, 28,0.2)'
+  }
+})
+
+Confirm.init({
+  className: 'notiflix-confirm',
+  width: '300px',
+  zindex: 4003,
+  position: 'center',
+  distance: '10px',
+  backgroundColor: '#f8f8f8',
+  borderRadius: '25px',
+  backOverlay: true,
+  backOverlayColor: 'rgba(0,0,0,0.5)',
+  rtl: false,
+  fontFamily: 'Quicksand',
+  cssAnimation: true,
+  cssAnimationDuration: 300,
+  cssAnimationStyle: 'fade',
+  plainText: true,
+  titleColor: '#301B1B',
+  titleFontSize: '16px',
+  titleMaxLength: 34,
+  messageColor: '#1e1e1e',
+  messageFontSize: '14px',
+  messageMaxLength: 110,
+  buttonsFontSize: '15px',
+  buttonsMaxLength: 34,
+  okButtonColor: '#f8f8f8',
+  okButtonBackground: '#301B1B',
+  cancelButtonColor: '#f8f8f8',
+  cancelButtonBackground: '#a9a9a9'
+})
 
 const Header = styled.header`
   position: fixed;
